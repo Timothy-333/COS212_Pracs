@@ -1,5 +1,6 @@
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         SkipList<Integer> myList = new SkipList<>(3);
         for (int i = 0; i < 10; i++) {
             myList.insert(i);
