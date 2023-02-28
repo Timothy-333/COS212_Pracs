@@ -39,6 +39,37 @@ public class SkipList<T extends Comparable<T>>
 
     public void insert(T key) 
     {
+        int level = chooseLevel();
+        SkipListNode<T> newNode = new SkipListNode<T>(key, level);
+        for(int i = level; i >=0; i--)
+        {
+            if(root[i] != null)
+            {
+                SkipListNode<T> nodePtr = root[i].next[i];
+                SkipListNode<T> prevNode = root[i];
+                if(key.compareTo(prevNode.next[i].key) < 0)
+                {
+                    root[i].next[i] = newNode;
+                    newNode.next[i] = prevNode;
+                }
+                while(nodePtr != null && key.compareTo(nodePtr.key) >= 0)
+                {
+                    prevNode = nodePtr;
+                    nodePtr = nodePtr.next[i];
+                }
+                if(nodePtr == null)
+                {
+                    newNode.next[i] = null;
+                }
+                else
+                {
+                    newNode.next[i] = nodePtr;
+                }
+                prevNode.next[i] = newNode;
+            }
+            else
+                root[i] = newNode;
+        }
         
     }
     public boolean isEmpty() 
@@ -48,32 +79,41 @@ public class SkipList<T extends Comparable<T>>
 
     public SkipListNode<T> search(T key) 
     {
-        int i = maxLevel;
-        while(i >= 0)
+        
+        for(int i = maxLevel-1; i >= 0;i--)
         {
-            SkipListNode<T> nodePtr = root[i];
-            while((int)key > (int)nodePtr.next[i].key && nodePtr.next[i] != null)
+            if(root[i] != null)
             {
-                nodePtr = nodePtr.next[i];
+                SkipListNode<T> nodePtr = root[i].next[i];
+                SkipListNode<T> prevNode = root[i];
+                if(prevNode.key == key)
+                    return prevNode;
+                while(nodePtr != null && key.compareTo(nodePtr.key) > 0)
+                {
+                    prevNode = nodePtr;
+                    nodePtr = nodePtr.next[i];
+                }
+                if(nodePtr != null && nodePtr.key == key)
+                {
+                    return nodePtr;
+                }
             }
-            if(nodePtr.key == key)
-            {
-                return nodePtr;
-            }
-            i--;
         }
         return null;
     }
 
     @Override
-    public String toString() {
+    public String toString() 
+    {
         return "";
     }
 
-    public boolean delete(T key) {
+    public boolean delete(T key) 
+    {
         return false;
     }
 
-    public void printSearchPath(T key) {
+    public void printSearchPath(T key) 
+    {
     }
 }
