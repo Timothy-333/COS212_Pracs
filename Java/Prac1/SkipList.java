@@ -25,7 +25,7 @@ public class SkipList<T extends Comparable<T>>
         }
     }
 
-    public int chooseLevel() 
+    public int chooseLevel()
     {
         int n = (int) Math.pow(2,maxLevel);
         int random = Math.abs(randomGenerator.nextInt()) % powers[maxLevel-1] + 1;
@@ -34,7 +34,6 @@ public class SkipList<T extends Comparable<T>>
         {
             counter++;
         }
-        // System.out.println(counter + " " + random);
         return counter+1;
     }
 
@@ -120,23 +119,76 @@ public class SkipList<T extends Comparable<T>>
     public String toString() 
     {
         String out = "";
+        String[] levels = new String[maxLevel];
+        SkipListNode<T> nodePtr = root[0];
         for(int i = maxLevel-1; i >= 0;i--)
         {
-            out += "[Lvl " + i + "]";
-            SkipListNode<T> nodePtr = root[i];
-            while(nodePtr != null)
+            levels[i] = "[Lvl " + i + "]";
+        }
+        while(nodePtr != null)
+        {
+            for(int i = maxLevel-1; i >= 0;i--)
             {
-                out += nodePtr.toString();
-                nodePtr = nodePtr.next[i];
+                if(i < nodePtr.next.length)
+                {
+                    levels[i] += "->" + nodePtr.toString();
+                }
+                else
+                {
+                    levels[i] += "--" + nodePtr.emptyString();
+                }
             }
-            out += "\n";
+            nodePtr = nodePtr.next[0];
+        }
+        for(int i = maxLevel-1; i >= 0;i--)
+        {
+            out += levels[i].substring(0, 1+levels[i].lastIndexOf("]")) + "\n";
         }
         return out;
     }
 
     public boolean delete(T key) 
     {
-        return false;
+        boolean flag = false;
+        if(!isEmpty() && search(key) != null)
+        {
+            Boolean hasStarted = false;
+            SkipListNode<T> nodePtr = null;
+            SkipListNode<T> prevNode = null;
+            for(int i = maxLevel-1; i >= 0;i--)
+            {
+                if(root[i] != null)
+                {
+                    if(!hasStarted)
+                    {
+                        nodePtr = root[i];
+                        prevNode = root[i];
+
+                        hasStarted = key.compareTo(prevNode.key) > 0;
+                    }
+                    else
+                    {
+                        nodePtr = prevNode.next[i];
+                    }
+                    while(nodePtr != null && nodePtr != search(key))
+                    {
+                        prevNode = nodePtr;
+                        nodePtr = nodePtr.next[i];
+                    }
+                    if(nodePtr == root[i] && nodePtr == search(key))
+                    {
+                        root[i] = nodePtr.next[i];
+                    }
+                    if(nodePtr != null && nodePtr == search(key))
+                    {
+                        prevNode.next[i] = nodePtr.next[i];
+                        flag = true;
+                    }
+                }
+                
+            }
+        }
+        return flag;
     }
 
     public void printSearchPath(T key) 
