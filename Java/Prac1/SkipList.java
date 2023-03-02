@@ -150,7 +150,8 @@ public class SkipList<T extends Comparable<T>>
     public boolean delete(T key) 
     {
         boolean flag = false;
-        if(!isEmpty() && search(key) != null)
+        SkipListNode<T> deleteNode = search(key);
+        if(!isEmpty() && deleteNode != null)
         {
             Boolean hasStarted = false;
             SkipListNode<T> nodePtr = null;
@@ -170,16 +171,16 @@ public class SkipList<T extends Comparable<T>>
                     {
                         nodePtr = prevNode.next[i];
                     }
-                    while(nodePtr != null && nodePtr != search(key))
+                    while(nodePtr != null && nodePtr != deleteNode)
                     {
                         prevNode = nodePtr;
                         nodePtr = nodePtr.next[i];
                     }
-                    if(nodePtr == root[i] && nodePtr == search(key))
+                    if(nodePtr == root[i] && nodePtr == deleteNode)
                     {
                         root[i] = nodePtr.next[i];
                     }
-                    if(nodePtr != null && nodePtr == search(key))
+                    if(nodePtr != null && nodePtr == deleteNode)
                     {
                         prevNode.next[i] = nodePtr.next[i];
                         flag = true;
