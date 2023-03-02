@@ -6,6 +6,7 @@ public class Main {
             myList.insert(i);
         }
         SkipList<String> myList1 = new SkipList<>(3);
+        SkipList<Double> myList2 = new SkipList<>(3);
         myList1.insert("A");
         myList1.insert("Z");
         myList1.insert("C");
@@ -19,8 +20,25 @@ public class Main {
         myList1.insert("Z");
         myList1.insert("Z");
         System.out.println(myList1);
+        myList1.delete("A");
+        myList1.delete("A");
+        myList1.delete("A");
+        myList1.delete("A");
+        myList1.delete("Hello");
+        myList1.delete("C");
         myList1.delete("Z");
+        myList1.delete("Y");
+        myList1.delete("Z");
+        myList1.delete("Z");
+        myList1.delete("Hellothere");
+        myList1.insert("Z");
+        myList1.insert("Z");
+        myList1.insert("Z");
+        myList2.insert(8.5);
+        myList2.delete(8.5);
         System.out.println(myList1);
+        System.out.println(myList2);
+        myList1.printSearchPath("Z");
         // System.out.print("Searching for 8\t");
         // myList.printSearchPath(8);
         // System.out.print("Searching for 2\t");

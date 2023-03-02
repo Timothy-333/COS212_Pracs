@@ -36,17 +36,28 @@ public class SkipList<T extends Comparable<T>>
         }
         return counter+1;
     }
-
     public void insert(T key) 
     {
         int level = chooseLevel();
         SkipListNode<T> newNode = new SkipListNode<T>(key, level);
+        Boolean hasStarted = false;
+        SkipListNode<T> nodePtr = null;
+        SkipListNode<T> prevNode = null;
         for(int i = level-1; i >=0; i--)
         {
             if(root[i] != null)
             {
-                SkipListNode<T> nodePtr = root[i];
-                SkipListNode<T> prevNode = root[i];
+                if(!hasStarted)
+                {
+                    nodePtr = root[i];
+                    prevNode = root[i];
+
+                    hasStarted = key.compareTo(prevNode.key) >= 0;
+                }
+                else
+                {
+                    nodePtr = prevNode.next[i];
+                }
                 if(key.compareTo(prevNode.key) < 0)
                 {
                     newNode.next[i] = prevNode;
@@ -150,10 +161,11 @@ public class SkipList<T extends Comparable<T>>
         SkipListNode<T> deleteNode = search(key);
         if(!isEmpty() && deleteNode != null)
         {
+            int level = deleteNode.next.length;
             Boolean hasStarted = false;
             SkipListNode<T> nodePtr = null;
             SkipListNode<T> prevNode = null;
-            for(int i = maxLevel-1; i >= 0;i--)
+            for(int i = level-1; i >= 0;i--)
             {
                 if(root[i] != null)
                 {
