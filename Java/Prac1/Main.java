@@ -1,10 +1,10 @@
 public class Main {
     public static void main(String[] args) 
     {
-        // SkipList<Integer> myList = new SkipList<>(3);
-        // for (int i = 0; i < 10; i++) {
-        //     myList.insert(i);
-        // }
+        SkipList<Integer> myList = new SkipList<>(3);
+        for (int i = 0; i < 10; i++) {
+            myList.insert(i);
+        }
         SkipList<String> myList1 = new SkipList<>(3);
         myList1.insert("A");
         myList1.insert("Z");
@@ -16,8 +16,10 @@ public class Main {
         myList1.insert("Hellothere");
         myList1.insert("Y");
         myList1.printSearchPath("Z");
+        myList1.insert("Z");
+        myList1.insert("Z");
         System.out.println(myList1);
-        myList1.delete("A");
+        myList1.delete("Z");
         System.out.println(myList1);
         // System.out.print("Searching for 8\t");
         // myList.printSearchPath(8);
@@ -44,9 +46,6 @@ public class Main {
         // myList.insert(25);
         // myList.insert(25);
         // myList.insert(25);
-        // myList.insert(30);
-        // myList.insert(30);
-        // myList.insert(30);
         // myList.insert(30);
         // myList.insert(30);
         // myList.insert(30);

@@ -45,27 +45,23 @@ public class SkipList<T extends Comparable<T>>
         {
             if(root[i] != null)
             {
-                SkipListNode<T> nodePtr = root[i].next[i];
+                SkipListNode<T> nodePtr = root[i];
                 SkipListNode<T> prevNode = root[i];
                 if(key.compareTo(prevNode.key) < 0)
                 {
                     newNode.next[i] = prevNode;
                     root[i] = newNode;
                 }
-                while(nodePtr != null && key.compareTo(nodePtr.key) >= 0)
-                {
-                    prevNode = nodePtr;
-                    nodePtr = nodePtr.next[i];
-                }
-                if(nodePtr == null)
-                {
-                    newNode.next[i] = null;
-                }
                 else
                 {
+                    while(nodePtr != null && key.compareTo(nodePtr.key) >= 0)
+                    {
+                        prevNode = nodePtr;
+                        nodePtr = nodePtr.next[i];
+                    }
                     newNode.next[i] = nodePtr;
+                    prevNode.next[i] = newNode;
                 }
-                prevNode.next[i] = newNode;
             }
             else
                 root[i] = newNode;
@@ -205,7 +201,6 @@ public class SkipList<T extends Comparable<T>>
             {
                 if(root[i] != null)
                 {
-                    System.out.println("Yes");
                     if(!hasStarted)
                     {
                         nodePtr = root[i];
@@ -225,7 +220,7 @@ public class SkipList<T extends Comparable<T>>
                         nodePtr = nodePtr.next[i];
                         if(nodePtr != null) out+=nodePtr.toString();
                     }
-                    if(nodePtr != null && nodePtr.key.equals(key))
+                    if(nodePtr != null && nodePtr.key.compareTo(key) == 0)
                     {
                         System.out.println(out);
                         return;
