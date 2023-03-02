@@ -104,7 +104,7 @@ public class SkipList<T extends Comparable<T>>
                         prevNode = nodePtr;
                         nodePtr = nodePtr.next[i];
                     }
-                    if(nodePtr != null && nodePtr.key == key)
+                    if(nodePtr != null && nodePtr.key.equals(key))
                     {
                         return nodePtr;
                     }
@@ -140,10 +140,11 @@ public class SkipList<T extends Comparable<T>>
             }
             nodePtr = nodePtr.next[0];
         }
-        for(int i = maxLevel-1; i >= 0;i--)
+        for(int i = maxLevel-1; i > 0;i--)
         {
             out += levels[i].substring(0, 1+levels[i].lastIndexOf("]")) + "\n";
         }
+        out += levels[0].substring(0, 1+levels[0].lastIndexOf("]"));
         return out;
     }
 
@@ -204,6 +205,7 @@ public class SkipList<T extends Comparable<T>>
             {
                 if(root[i] != null)
                 {
+                    System.out.println("Yes");
                     if(!hasStarted)
                     {
                         nodePtr = root[i];
@@ -223,7 +225,7 @@ public class SkipList<T extends Comparable<T>>
                         nodePtr = nodePtr.next[i];
                         if(nodePtr != null) out+=nodePtr.toString();
                     }
-                    if(nodePtr != null && nodePtr.key == key)
+                    if(nodePtr != null && nodePtr.key.equals(key))
                     {
                         System.out.println(out);
                         return;
