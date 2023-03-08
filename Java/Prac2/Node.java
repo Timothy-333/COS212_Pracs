@@ -5,7 +5,10 @@ public class Node<T extends Comparable<T>>{
     public T data;
 
     public Node(T data){
-        //TODO: Implement the function
+        accessCount = 0;
+        this.data = data;
+        next = null;
+        prev = null;
     }
 
     @Override
