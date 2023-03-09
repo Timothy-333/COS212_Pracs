@@ -4,7 +4,7 @@ public class App {
         //comment part of the code you will not be testing
         System.out.println("Testing CountList fucntions.................................");
 
-        CountList <Integer> countList = new CountList<>();
+        // CountList <Integer> countList = new CountList<>();
         // MoveToFrontList <Integer> countList = new MoveToFrontList<>();
         // NaturalOrderList <Integer> countList = new NaturalOrderList<>();
         // TransposeList <Integer> countList = new TransposeList<>();
@@ -13,18 +13,19 @@ public class App {
     public static void Count()
     {
         CountList <Integer> countList = new CountList<>();
-        insertlist(countList);
+        insertRandom(countList);
         System.out.println("Testing both next and prev links");
         print(countList);
 
         System.out.println("Testing remove");
         removeFromHead(countList);
-        insertlist(countList);
+        insertRandom(countList);
         System.out.println("Testing access");
         accessFromfront(countList);
+        accessRandom(countList);
 
         IterativeTraverse<Integer> list = new IterativeTraverse<>(countList);
-        // list.setList(countList);
+        list.setList(countList);
         System.out.println("Testing Iterative Class");
         System.out.println(list);
         System.out.println("Reversing List");
@@ -61,8 +62,8 @@ public class App {
 
         // RecursiveTraverse<Integer> list = new RecursiveTraverse<>(countList);
         // list.setList(countList);
-        System.out.println("Testing Recursive Class");
-        System.out.println(list);
+        // System.out.println("Testing Recursive Class");
+        // System.out.println(list);
         // System.out.println("Reversing List");
         // SelfOrderingList<Integer> newList = list.reverseList();
         // list.setList(newList);
@@ -213,39 +214,42 @@ public class App {
     {
         System.out.println("Accessing Randomly");
 
-        // System.out.println("Accessing 3");
-        // list.access(3);
-        // print(list);
-        // System.out.println("Accessing 8");
-        // list.access(8);
-        // print(list);
-        // System.out.println("Accessing 4");
-        // list.access(4);
-        // print(list);
-        // System.out.println("Accessing 2");
-        // list.access(2);
-        // print(list);
-        // System.out.println("Accessing 9");
-        // list.access(9);
-        // print(list);
-        // System.out.println("Accessing 0");
-        // list.access(0);
-        // print(list);
+        System.out.println("Accessing 3");
+        list.access(3);
+        print(list);
+        System.out.println("Accessing 3");
+        list.access(3);
+        print(list);
+        System.out.println("Accessing 8");
+        list.access(8);
+        print(list);
+        System.out.println("Accessing 4");
+        list.access(4);
+        print(list);
+        System.out.println("Accessing 2");
+        list.access(2);
+        print(list);
+        System.out.println("Accessing 9");
+        list.access(9);
+        print(list);
+        System.out.println("Accessing 0");
+        list.access(0);
+        print(list);
         System.out.println("Accessing 1");
         list.access(1);
-        // print(list);
-        // System.out.println("Accessing 5");
-        // list.access(5);
-        // print(list);
-        // System.out.println("Accessing 7");
-        // list.access(7);
-        // print(list);
-        // System.out.println("Accessing 6");
-        // list.access(6);
-        // print(list);
-        // System.out.println("Accessing 100, shouldnt move anything");
-        // list.access(100);
-        // print(list);
+        print(list);
+        System.out.println("Accessing 5");
+        list.access(5);
+        print(list);
+        System.out.println("Accessing 7");
+        list.access(7);
+        print(list);
+        System.out.println("Accessing 6");
+        list.access(6);
+        print(list);
+        System.out.println("Accessing 100, shouldnt move anything");
+        list.access(100);
+        print(list);
         System.out.println();
         System.out.println();
     }

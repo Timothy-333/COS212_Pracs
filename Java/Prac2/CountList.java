@@ -8,9 +8,9 @@ public class CountList<T extends Comparable<T>> extends SelfOrderingList<T>{
     @Override
     public void access(T data) 
     {
-        Node<T> nodePtr = head;
         if(head != null)
         {
+            Node<T> nodePtr = head;
             while(nodePtr != null)
             {
                 if(nodePtr.data.compareTo(data) == 0)
@@ -22,37 +22,24 @@ public class CountList<T extends Comparable<T>> extends SelfOrderingList<T>{
             }
             if(head.next == null)
                 return;
-            nodePtr = head;
-            while(nodePtr != null)
+            while(nodePtr != null && nodePtr.prev != null && nodePtr.accessCount > nodePtr.prev.accessCount)
             {
-                Node<T> nodePtrTemp = nodePtr.next;
-                Node<T> checkingNode = nodePtr;
-                Node<T> prevNode = nodePtr;
-                while(nodePtrTemp != null && checkingNode.accessCount > nodePtrTemp.accessCount)
+                if(nodePtr.prev.prev != null)
                 {
-                    prevNode = nodePtrTemp;
-                    nodePtrTemp = nodePtrTemp.next;
-                }
-                if(checkingNode.prev != null)
-                {
-                    checkingNode.prev.next = checkingNode.next;
+                    nodePtr.prev.prev.next = nodePtr;
                 }
                 else
                 {
-                    head = checkingNode.next;
+                    head = nodePtr;
                 }
-                if(checkingNode.next != null)
+                if(nodePtr.next != null)
                 {
-                    checkingNode.next.prev = checkingNode.prev;
+                    nodePtr.next.prev = nodePtr.prev;
                 }
-                if(nodePtrTemp != null)
-                {
-                    nodePtrTemp.prev = checkingNode;   
-                }
-                checkingNode.next = nodePtrTemp;
-                checkingNode.prev = prevNode;
-                prevNode.next = checkingNode;
-                nodePtr = nodePtr.next;
+                nodePtr.prev.next = nodePtr.next;
+                nodePtr.next = nodePtr.prev;
+                nodePtr.prev = nodePtr.prev.prev;
+                nodePtr.next.prev = nodePtr;
             }
         }
     }

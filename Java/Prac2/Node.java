@@ -10,6 +10,12 @@ public class Node<T extends Comparable<T>>{
         next = null;
         prev = null;
     }
+    public Node(T data, int accessCount){
+        this.accessCount = accessCount;
+        this.data = data;
+        next = null;
+        prev = null;
+    }
 
     @Override
     public String toString() {

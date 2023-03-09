@@ -10,7 +10,7 @@ public class IterativeTraverse<T extends Comparable<T>> extends Traverser<T>{
         Node<T> nodePtr = list.head;
         while(nodePtr != null)
         {
-            this.list.insert(nodePtr.data);
+            this.list.insert(nodePtr.data, nodePtr.accessCount);
             nodePtr = nodePtr.next;
         }
 
@@ -19,6 +19,8 @@ public class IterativeTraverse<T extends Comparable<T>> extends Traverser<T>{
     @Override
     public SelfOrderingList<T> reverseList()
     {
+        if(list.head == null)
+            return null;
         SelfOrderingList<T> newList = list.getBlankList();
         if(list.head != null)
         {
@@ -112,6 +114,10 @@ public class IterativeTraverse<T extends Comparable<T>> extends Traverser<T>{
     @Override
     public SelfOrderingList<T> clone(SelfOrderingList<T> otherList)
     {
+        if(otherList == null)
+        {
+            return null;
+        }
         SelfOrderingList<T> newList = otherList.getBlankList();
         Node<T> nodePtr = otherList.head;
         while(nodePtr != null)

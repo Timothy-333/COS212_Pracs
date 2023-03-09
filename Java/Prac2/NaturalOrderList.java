@@ -22,7 +22,7 @@ public class NaturalOrderList<T extends Comparable<T>> extends SelfOrderingList<
         {
             Node<T> nodePtr = head;
             Node<T> prevNode = null;
-            while(nodePtr != null && nodePtr.data.compareTo(data) < 0)
+            while(nodePtr != null && nodePtr.data.compareTo(data) > 0)
             {
                 prevNode = nodePtr;
                 nodePtr = nodePtr.next;

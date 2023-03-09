@@ -8,19 +8,30 @@ public class RecursiveTraverse<T extends Comparable<T>> extends Traverser<T>
     public RecursiveTraverse(SelfOrderingList<T> list)
     {
         this.list = list.getBlankList();
-        CopyNode(list.head, this.list);
+        CopyNode(list.head, this.list, true);
     }
-    private void CopyNode(Node<T> nodePtr, SelfOrderingList<T> newList)
+
+    private void CopyNode(Node<T> nodePtr, SelfOrderingList<T> newList, boolean copyAccessCount)
     {
         if(nodePtr != null)
         {
-            newList.insert(nodePtr.data);
-            CopyNode(nodePtr.next, newList);
+            if(copyAccessCount)
+            {
+                newList.insert(nodePtr.data, nodePtr.accessCount);
+            }
+            else
+            {
+                newList.insert(nodePtr.data);
+            }
+            CopyNode(nodePtr.next, newList , copyAccessCount);
         }
     }
+
     @Override
     public SelfOrderingList<T> reverseList() 
     {
+        if(list.head == null)
+            return null;
         SelfOrderingList<T> newList = list.getBlankList();
         CopyNodeReverse(list.head, newList);
         return newList;
@@ -29,10 +40,11 @@ public class RecursiveTraverse<T extends Comparable<T>> extends Traverser<T>
     {
         if(nodePtr != null)
         {
-            CopyNode(nodePtr.next, newList);
-            newList.insert(nodePtr.data);
+            CopyNodeReverse(nodePtr.next, newList);
+            newList.insert(nodePtr.data,nodePtr.accessCount);
         }
     }
+
     @Override
     public boolean contains(T data) 
     {
@@ -50,6 +62,7 @@ public class RecursiveTraverse<T extends Comparable<T>> extends Traverser<T>
         }
         return false;
     }
+
     @Override
     public String toString() 
     {
@@ -63,6 +76,7 @@ public class RecursiveTraverse<T extends Comparable<T>> extends Traverser<T>
         }
         return "";
     }
+
     @Override
     public Node<T> get(int pos) 
     {
@@ -80,6 +94,7 @@ public class RecursiveTraverse<T extends Comparable<T>> extends Traverser<T>
         }
         return null;
     }
+
     @Override
     public Node<T> find(T data) 
     {
@@ -97,6 +112,7 @@ public class RecursiveTraverse<T extends Comparable<T>> extends Traverser<T>
         }
         return null;
     }
+
     @Override
     public int size() 
     {
@@ -106,15 +122,20 @@ public class RecursiveTraverse<T extends Comparable<T>> extends Traverser<T>
     {
         if(nodePtr != null)
         {
-            return countNode(nodePtr.next, size++);
+            return countNode(nodePtr.next, ++size);
         }
         return size;
     }
+    
     @Override
     public SelfOrderingList<T> clone(SelfOrderingList<T> otherList) 
     {
+        if(otherList == null)
+        {
+            return null;
+        }
         SelfOrderingList<T> newList = otherList.getBlankList();
-        CopyNode(otherList.head, newList);
+        CopyNode(otherList.head, newList, false);
         return newList;
     }
 }

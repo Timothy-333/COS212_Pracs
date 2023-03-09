@@ -21,7 +21,25 @@ abstract class SelfOrderingList<T extends Comparable<T>>
         }
         
     }
-
+    public void insert(T data, int accessCount)
+    {
+        Node<T> newNode = new Node<T>(data, accessCount);
+        if(head == null)
+        {
+            head = newNode;
+        }
+        else
+        {
+            Node<T> nodePtr = head;
+            while(nodePtr.next != null)
+            {
+                nodePtr = nodePtr.next;
+            }
+            nodePtr.next = newNode;
+            newNode.prev = nodePtr;
+        }
+        
+    }
     public void remove(T data)
     {
         Node<T> nodePtr = head;
