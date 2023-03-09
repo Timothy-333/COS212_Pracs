@@ -30,17 +30,16 @@ abstract class SelfOrderingList<T extends Comparable<T>>
         {
             if(nodePtr.data.compareTo(data) == 0)
             {
+                if(nodePtr.next != null)
+                {
+                    nodePtr.next.prev = prevNode;
+                }
                 if(prevNode == null)
                 {
                     head = nodePtr.next;
-                    nodePtr.next.prev = null;
                 }
                 else
                 {
-                    if(nodePtr.next != null)
-                    {
-                        nodePtr.next.prev = prevNode;
-                    }
                     prevNode.next = nodePtr.next;
                 }
                 return;

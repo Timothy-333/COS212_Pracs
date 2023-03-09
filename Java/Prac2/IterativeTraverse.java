@@ -2,7 +2,7 @@ public class IterativeTraverse<T extends Comparable<T>> extends Traverser<T>{
     public IterativeTraverse()
     {
         list = null;
-    };
+    }
     
     public IterativeTraverse(SelfOrderingList<T> list)
     {
@@ -54,12 +54,11 @@ public class IterativeTraverse<T extends Comparable<T>> extends Traverser<T>{
     @Override
     public String toString() 
     {
-        //make a string like this - >( node data [ node accessCount ]) - >( node data [ node 1 accessCount ])
         String str = "";
         Node<T> nodePtr = list.head;
         while(nodePtr != null)
         {
-            str += "->( " + nodePtr.data + " [ " + nodePtr.accessCount + " ] )";
+            str += "->" + nodePtr.toString();
             nodePtr = nodePtr.next;
         }
         return str;

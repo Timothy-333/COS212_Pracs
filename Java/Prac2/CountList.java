@@ -33,28 +33,25 @@ public class CountList<T extends Comparable<T>> extends SelfOrderingList<T>{
                     prevNode = nodePtrTemp;
                     nodePtrTemp = nodePtrTemp.next;
                 }
-                if(checkingNode != nodePtrTemp.next)
+                if(checkingNode.prev != null)
                 {
-                    if(checkingNode.prev != null)
-                    {
-                        checkingNode.prev.next = checkingNode.next;
-                    }
-                    else
-                    {
-                        head = checkingNode.next;
-                    }
-                    if(checkingNode.next != null)
-                    {
-                        checkingNode.next.prev = checkingNode.prev;
-                    }
-                    if(nodePtrTemp != null)
-                    {
-                        nodePtrTemp.prev = checkingNode;   
-                    }
-                    checkingNode.next = nodePtrTemp;
-                    checkingNode.prev = prevNode;
-                    prevNode.next = checkingNode;
+                    checkingNode.prev.next = checkingNode.next;
                 }
+                else
+                {
+                    head = checkingNode.next;
+                }
+                if(checkingNode.next != null)
+                {
+                    checkingNode.next.prev = checkingNode.prev;
+                }
+                if(nodePtrTemp != null)
+                {
+                    nodePtrTemp.prev = checkingNode;   
+                }
+                checkingNode.next = nodePtrTemp;
+                checkingNode.prev = prevNode;
+                prevNode.next = checkingNode;
                 nodePtr = nodePtr.next;
             }
         }
