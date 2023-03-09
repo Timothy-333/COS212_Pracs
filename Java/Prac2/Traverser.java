@@ -15,7 +15,8 @@ abstract class Traverser<T extends Comparable<T>>{
 
     public abstract SelfOrderingList<T> clone(SelfOrderingList<T> otherList);
 
-    public void setList(SelfOrderingList<T> otherList){
-        //TODO: Implement the function
+    public void setList(SelfOrderingList<T> otherList)
+    {
+        list = otherList;
     }
 }
