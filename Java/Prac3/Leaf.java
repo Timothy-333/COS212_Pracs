@@ -3,10 +3,12 @@ public class Leaf<T extends Comparable<T>>{
     public Leaf<T> right;
     public T data;
 
-    public Leaf(T data){
-        //TODO: Implement this function
+    public Leaf(T data)
+    {
+        this.data = data;
+        left = null;
+        right = null;
     }
-
     public String toString(){
         String lStr;
         String rStr;
