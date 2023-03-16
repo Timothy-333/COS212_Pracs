@@ -9,8 +9,7 @@ public class StandardBinaryTree<T extends Comparable<T>> extends BinaryTree<T> {
     {
         if(leaf.left != null)
             depthFirstTraversal(leaf.left);
-        else
-            leaf.toString();
+        System.out.println(leaf.data);
         if(leaf.right != null)
             depthFirstTraversal(leaf.right);
     }
@@ -50,8 +49,27 @@ public class StandardBinaryTree<T extends Comparable<T>> extends BinaryTree<T> {
             return Math.max(height(leaf.left), height(leaf.right)) + 1;
     }
     @Override
-    public Leaf<T> findParent(T data) {
-        //TODO: Implement this function
+    public Leaf<T> findParent(T data) 
+    {
+        if(root.data == data)
+            return null;
+        else if(root != null)
+            return findParent(root, data);
+        else
+            return null;
+    }
+    private Leaf<T> findParent(Leaf<T> leaf, T data)
+    {
+        if(leaf.left != null && leaf.left.data.compareTo(data) == 0)
+            return leaf;
+        else if(leaf.right != null && leaf.right.data.compareTo(data) == 0)
+            return leaf;
+        else if(leaf.left != null && leaf.left.data.compareTo(data) > 0)
+            return findParent(leaf.left, data);
+        else if(leaf.right != null && leaf.right.data.compareTo(data) < 0)
+            return findParent(leaf.right, data);
+        else
+            return null;
     }
 
     @Override
