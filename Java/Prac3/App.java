@@ -9,6 +9,27 @@ public class App {
         t.insert(2);
         t.insert(1);
         t.insert(3);
+        t.insert(5);
+        t.insert(6);
+        t.insert(0);
+        t.insert(2);
+        t.insert(8);
+        t.insert(12);
+    
+        System.out.println("Tree Height");
+        System.out.println(t.height() + "\n");
+        System.out.println("Tree Number of Leaves");
+        System.out.println(t.numLeavesInTree() + "\n");
+        System.out.println("Depth First Traversal");
+        t.depthFirstTraversal();
+        System.out.println("\nFind parent of [3]");
+        t.findParent(3);
+        System.out.println("\nFind [1]");
+        t.find(1);
+        System.out.println("\nContains [5]");
+        t.contains(5);
+
+        t = t.convertTree();
     
         System.out.println("Tree Height");
         System.out.println(t.height() + "\n");
