@@ -198,11 +198,11 @@ public class Board {
     public void solve() 
     {
         int counter = 0;
-        while(soleCandidate () || uniqueCandidate () || duplicateCells () )
+        while(soleCandidate() || uniqueCandidate() || duplicateCells())
         {
             counter++;
         }
-        System.out.println("Number of moves : {" + counter + "}");
+        System.out.println("Number of moves: " + counter );
     }
 
     public boolean soleCandidate() 
@@ -221,10 +221,215 @@ public class Board {
 
     public boolean uniqueCandidate() 
     { 
+        for(int row = 0; row < numRows * numCols; row++)
+        {
+            int counts[] = new int[numRows * numCols];
+            Cell rowPtr = rows[row];
+            while(rowPtr != null)
+            {
+                if(rowPtr.possibleValues != null)
+                {
+                    Node<Integer> nodePtr = rowPtr.possibleValues.head;
+                    while(nodePtr != null)
+                    {
+                        counts[nodePtr.data - 1]++;
+                        nodePtr = nodePtr.next;
+                    }
+                }
+                rowPtr = rowPtr.right;
+            }
+            for(int i = 0; i < numRows * numCols; i++)
+            {
+                if(counts[i] == 1)
+                {
+                    rowPtr = rows[row];
+                    while(rowPtr != null)
+                    {
+                        if(rowPtr.possibleValues != null && rowPtr.possibleValues.contains(i + 1))
+                        {
+                            rowPtr.setVal(i + 1);
+                            propCell(rowPtr);
+                        }
+                        rowPtr = rowPtr.right;
+                    }
+                    return true;
+                }
+            }
+        }
+        for(int col = 0; col < numRows * numCols; col++)
+        {
+            int counts[] = new int[numRows * numCols];
+            Cell colPtr = cols[col];
+            while(colPtr != null)
+            {
+                if(colPtr.possibleValues != null)
+                {
+                    Node<Integer> nodePtr = colPtr.possibleValues.head;
+                    while(nodePtr != null)
+                    {
+                        counts[nodePtr.data - 1]++;
+                        nodePtr = nodePtr.next;
+                    }
+                }
+                colPtr = colPtr.below;
+            }
+            for(int i = 0; i < numRows * numCols; i++)
+            {
+                if(counts[i] == 1)
+                {
+                    colPtr = cols[col];
+                    while(colPtr != null)
+                    {
+                        if(colPtr.possibleValues != null && colPtr.possibleValues.contains(i + 1))
+                        {
+                            colPtr.setVal(i + 1);
+                            propCell(colPtr);
+                        }
+                        colPtr = colPtr.below;
+                    }
+                    return true;
+                }
+            }
+        }
+        for(int block = 0; block < numRows * numCols; block++)
+        {
+            int counts[] = new int[numRows * numCols];
+            Cell blockPtr = blocks[block];
+            while(blockPtr != null)
+            {
+                if(blockPtr.possibleValues != null)
+                {
+                    Node<Integer> nodePtr = blockPtr.possibleValues.head;
+                    while(nodePtr != null)
+                    {
+                        counts[nodePtr.data - 1]++;
+                        nodePtr = nodePtr.next;
+                    }
+                }
+                blockPtr = blockPtr.block;
+            }
+            for(int i = 0; i < numRows * numCols; i++)
+            {
+                if(counts[i] == 1)
+                {
+                    blockPtr = blocks[block];
+                    while(blockPtr != null)
+                    {
+                        if(blockPtr.possibleValues != null && blockPtr.possibleValues.contains(i + 1))
+                        {
+                            blockPtr.setVal(i + 1);
+                            propCell(blockPtr);
+                        }
+                        blockPtr = blockPtr.block;
+                    }
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
-    public boolean duplicateCells() {
+    public boolean duplicateCells() 
+    {
+        for(int row = 0; row < numRows * numCols; row++)
+        {
+            Cell rowPtr = this.rows[row];
+            while(rowPtr != null)
+            {
+                if(rowPtr.possibleValues != null && rowPtr.possibleValues.length == 2)
+                {
+                    Cell secondPtr = rowPtr.right;
+                    while(secondPtr != null)
+                    {
+                        if(rowPtr.possibleValues.equals(secondPtr.possibleValues))
+                        {
+                            Cell thirdPtr = this.rows[row];
+                            Boolean change = false;
+                            while(thirdPtr != null)
+                            {
+                                if(thirdPtr != secondPtr && thirdPtr != rowPtr && thirdPtr.possibleValues != null)
+                                {
+                                    change = change || thirdPtr.possibleValues.remove(rowPtr.possibleValues);
+                                }
+                                thirdPtr = thirdPtr.right;
+                            }
+                            if(change)
+                            {
+                                return true;
+                            }
+                        }
+                        secondPtr = secondPtr.right;
+                    }
+                }
+                rowPtr = rowPtr.right;
+            }
+        }
+        for(int col = 0; col < numRows * numCols; col++)
+        {
+            Cell colPtr = this.cols[col];
+            while(colPtr != null)
+            {
+                if(colPtr.possibleValues != null && colPtr.possibleValues.length == 2)
+                {
+                    Cell secondPtr = colPtr.below;
+                    while(secondPtr != null)
+                    {
+                        if(colPtr.possibleValues.equals(secondPtr.possibleValues))
+                        {
+                            Cell thirdPtr = this.cols[col];
+                            Boolean change = false;
+                            while(thirdPtr != null)
+                            {
+                                if(thirdPtr != secondPtr && thirdPtr != colPtr && thirdPtr.possibleValues != null)
+                                {
+                                    change = change || thirdPtr.possibleValues.remove(colPtr.possibleValues);
+                                }
+                                thirdPtr = thirdPtr.below;
+                            }
+                            if(change)
+                            {
+                                return true;
+                            }
+                        }
+                        secondPtr = secondPtr.below;
+                    }
+                }
+                colPtr = colPtr.below;
+            }
+        }
+        for(int block = 0; block < numRows * numCols; block++)
+        {
+            Cell blockPtr = this.blocks[block];
+            while(blockPtr != null)
+            {
+                if(blockPtr.possibleValues != null && blockPtr.possibleValues.length == 2)
+                {
+                    Cell secondPtr = blockPtr.block;
+                    while(secondPtr != null)
+                    {
+                        if(blockPtr.possibleValues.equals(secondPtr.possibleValues))
+                        {
+                            Cell thirdPtr = this.blocks[block];
+                            Boolean change = false;
+                            while(thirdPtr != null)
+                            {
+                                if(thirdPtr != secondPtr && thirdPtr != blockPtr && thirdPtr.possibleValues != null)
+                                {
+                                    change = change || thirdPtr.possibleValues.remove(blockPtr.possibleValues);
+                                }
+                                thirdPtr = thirdPtr.block;
+                            }
+                            if(change)
+                            {
+                                return true;
+                            }
+                        }
+                        secondPtr = secondPtr.block;
+                    }
+                }
+                blockPtr = blockPtr.block;
+            }
+        }
         return false;
     }
 }

@@ -30,6 +30,7 @@ public class List<T>
         Node<T> newNode = new Node<T>(val);
         if(head == null)
         {
+            length++;
             head = newNode;
             return;
         }
@@ -110,12 +111,16 @@ public class List<T>
     }
     public boolean equals(List<T> other) 
     {
+        if(other == null)
+            return false;
         Node<T> nodePtr = head;
         Node<T> nodePtrOther = other.head;
         while(nodePtr != null && nodePtrOther != null)
         {
             if(!nodePtr.data.equals(nodePtrOther.data))
                 return false;
+            nodePtr = nodePtr.next;
+            nodePtrOther = nodePtrOther.next;
         }
         if((nodePtr == null && nodePtrOther != null) || (nodePtr != null && nodePtrOther == null))
             return false;
