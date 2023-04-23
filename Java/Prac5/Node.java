@@ -14,10 +14,10 @@ public class Node<T extends Comparable<T>> {
 	@SuppressWarnings("unchecked")
 	public Node(int m) 
 	{
-		keys = new Comparable[m-1];
-		children = new Node[m];
 		this.m = m;
-		throw new UnsupportedOperationException();
+        this.keys = (T[])new Comparable[m-1];
+        this.children = new Node[m];
+        this.parent = null;
 	}
 	public Comparable<T> getKey(int i)
 	{
@@ -42,21 +42,45 @@ public class Node<T extends Comparable<T>> {
 	}
 	public int keysLength()
 	{
-		return keys.length;
+		int count = 0;
+		for(int i = 0; i < m-1; i++)
+		{
+			if(keys[i] != null)
+				count++;
+		}
+		return count;
 	}
 	public int childrenLength()
 	{
-		return children.length;
+		int count = 0;
+		for(int i = 0; i < m; i++)
+		{
+			if(children[i] != null)
+				count++;
+		}
+		return count;
 	}
 	public void setKey(int i, Comparable<T> data)
 	{
+		for(int j = m-2; j > i; j--)
+		{
+			keys[j] = keys[j-1];
+		}
 		keys[i] = data;
 	}
 	public void setParent(Node<T> parent)
 	{
 		this.parent = parent;
 	}
-	// public void setNode()
+	public void setChildNode(int i, Node<T> node)
+	{
+		for(int j = m-1; j > i; j--)
+		{
+			children[j] = children[j-1];
+		}
+		children[i] = node;
+		node.setParent(this);
+	}
 	@Override
 	public String toString() {
 		String res = "[";

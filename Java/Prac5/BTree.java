@@ -11,7 +11,7 @@ public class BTree<T extends Comparable<T>> {
 	{
 		this.m = m;
 		root = new Node<T>(m);
-		throw new UnsupportedOperationException();
+		// throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -30,64 +30,116 @@ public class BTree<T extends Comparable<T>> {
 		}
 		if(currentNode.childrenLength() == 0 && currentNode.keysLength() < m-1)
 		{
-			currentNode.setKey(currentNode.getSmallerKeyPos(data)+1, data);
+			currentNode.setKey(currentNode.getSmallerKeyPos(data), data);
 		}
 		else if(currentNode.childrenLength() == 0 && currentNode.keysLength() == m-1)
 		{
-			currentNode.setKey(currentNode.getSmallerKeyPos(data)+1, data);
+			currentNode.setKey(currentNode.getSmallerKeyPos(data), data);
 			currentNode = split(currentNode);
 		}
-		throw new UnsupportedOperationException();
+		return currentNode;
+		// throw new UnsupportedOperationException();
 	}
-	private Node<T> split(Node<T> node)
+	private Node<T> split(Node<T> node) 
 	{
 		Node<T> newNode = new Node<T>(m);
-		Node<T> parentNode = node.parent;
-		if(parentNode == null)
+		Node<T> parent = node.parent;
+		if(parent == null)
 		{
-			parentNode = new Node<T>(m);
-			root = parentNode;
+			parent = new Node<T>(m);
+			root = parent;
 		}
-		int pos = parentNode.getSmallerKeyPos(node.getKey(0));
-		parentNode.setKey(pos, node.getKey(0));
-		parentNode.setChildNode(pos, node);
-		parentNode.setChildNode(pos+1, newNode);
-		for(int i = 0; i < m-1; i++)
+		int pos = parent.getSmallerKeyPos((T)node.getKey(m/2));
+		if(pos == -1)
+			return node;
+		parent.setKey(pos, node.getKey(m/2));
+		parent.setChildNode(pos, node);
+		parent.setChildNode(pos+1, newNode);
+		for(int i = m/2+1; i < m-1; i++)
 		{
-			if(i < (m-1)/2)
+			newNode.setKey(i-m/2-1, node.getKey(i));
+			node.setKey(i, null);
+		}
+		for(int i = m/2+1; i < m; i++)
+		{
+			if(node.getChildNode(i) != null)
 			{
-				newNode.setKey(i, node.getKey((m-1)/2+i+1));
-				node.setKey((m-1)/2+i+1, null);
-			}
-			else
-			{
-				newNode.setKey(i, null);
+				newNode.setChildNode(i-m/2-1, node.getChildNode(i));
+				node.getChildNode(i).setParent(newNode);
+				node.setChildNode(i, null);
 			}
 		}
-		return parentNode;
+		return parent;
 	}
+	
 	/**
 	 * 
 	 * @param data
 	 */
-	public Node<T> find(T data) {
-		// TODO - implement BTree.find
-		throw new UnsupportedOperationException();
+	public Node<T> find(T data) 
+	{
+		Node<T> currentNode = root;
+		while(currentNode.childrenLength() > 0)
+		{
+			int pos = currentNode.getSmallerKeyPos(data);
+			if(pos == -1)
+				return currentNode;
+			currentNode = currentNode.getChildNode(pos);
+		}
+		return null;
+		// throw new UnsupportedOperationException();
 	}
 
-	public Node<T>[] nodes() {
-		// TODO - implement BTree.leaves
-		throw new UnsupportedOperationException();
+	public Node<T>[] nodes() 
+	{
+		if (root == null) return null;
+		Node<T>[] nodes = new Node[countNumNodes()];
+		nodes[0] = root;
+		int i = 1;
+		while (i < nodes.length) {
+			for (int j = 0; j < i; j++) { // Only consider nodes that have been added so far
+				if (nodes[j] != null) {
+					for (int k = 0; k < nodes[j].childrenLength(); k++) {
+						if (nodes[j].getChildNode(k) != null) {
+							nodes[i] = nodes[j].getChildNode(k);
+							i++;
+							if (i >= nodes.length) break; // Stop adding nodes when array is full
+						}
+					}
+				}
+			}
+		}
+		return nodes;
+		// throw new UnsupportedOperationException();
 	}
 
-	public int numKeys() {
-		// TODO - implement BTree.numKeys
-		throw new UnsupportedOperationException();
+	public int numKeys() 
+	{
+		int numKeys = 0;
+		Node<T>[] nodes = nodes();
+		for(int i = 0; i < nodes.length; i++)
+		{
+			numKeys += nodes[i].keysLength();
+		}
+		return numKeys;
+		// throw new UnsupportedOperationException();
 	}
 
-	public int countNumNodes() {
-		// TODO - implement BTree.countNumLeaves
-		throw new UnsupportedOperationException();
+	public int countNumNodes() 
+	{
+		if(root == null)
+			return 0;
+		return countNumNodes(root);
+		// throw new UnsupportedOperationException();
 	}
-
+	private int countNumNodes(Node<T> node) 
+	{
+		int numNodes = 1;
+		for(int i = 0; i < node.childrenLength(); i++)
+		{
+			if(node.getChildNode(i) != null)
+				numNodes += countNumNodes(node.getChildNode(i));
+		}
+		return numNodes;
+	}
 }
