@@ -30,11 +30,10 @@ public class BTree<T extends Comparable<T>> {
 		}
 		if(currentNode.childrenLength() == 0 && currentNode.keysLength() < m-1)
 		{
-			currentNode.setKey(currentNode.getSmallerKeyPos(data), data);
+			currentNode.setKey(data);
 		}
 		else if(currentNode.childrenLength() == 0 && currentNode.keysLength() == m-1)
 		{
-			currentNode.setKey(currentNode.getSmallerKeyPos(data), data);
 			currentNode = split(currentNode);
 		}
 		return currentNode;
@@ -43,33 +42,21 @@ public class BTree<T extends Comparable<T>> {
 	private Node<T> split(Node<T> node) 
 	{
 		Node<T> newNode = new Node<T>(m);
-		Node<T> parent = node.parent;
-		if(parent == null)
+		Node<T> parentNode = node.parent;
+		if(parentNode == null)
 		{
-			parent = new Node<T>(m);
-			root = parent;
+			parentNode = new Node<T>(m);
+			root = parentNode;
 		}
-		int pos = parent.getSmallerKeyPos((T)node.getKey(m/2));
-		if(pos == -1)
-			return node;
-		parent.setKey(pos, node.getKey(m/2));
-		parent.setChildNode(pos, node);
-		parent.setChildNode(pos+1, newNode);
+		parentNode.setKey(node.getKey(0));
+		parentNode.setChildNode(node);
+		parentNode.setChildNode(newNode);
+		newNode.setKey(node.getKey(m/2));
 		for(int i = m/2+1; i < m-1; i++)
 		{
-			newNode.setKey(i-m/2-1, node.getKey(i));
-			node.setKey(i, null);
+			newNode.setKey(node.getKey(i));
 		}
-		for(int i = m/2+1; i < m; i++)
-		{
-			if(node.getChildNode(i) != null)
-			{
-				newNode.setChildNode(i-m/2-1, node.getChildNode(i));
-				node.getChildNode(i).setParent(newNode);
-				node.setChildNode(i, null);
-			}
-		}
-		return parent;
+		return parentNode;
 	}
 	
 	/**

@@ -60,8 +60,9 @@ public class Node<T extends Comparable<T>> {
 		}
 		return count;
 	}
-	public void setKey(int i, Comparable<T> data)
+	public void setKey(Comparable<T> data)
 	{
+		int i = getSmallerKeyPos((T)data);
 		for(int j = m-2; j > i; j--)
 		{
 			keys[j] = keys[j-1];
@@ -72,13 +73,13 @@ public class Node<T extends Comparable<T>> {
 	{
 		this.parent = parent;
 	}
-	public void setChildNode(int i, Node<T> node)
+	public void setChildNode(Node<T> node)
 	{
+		int i = getSmallerKeyPos((T)node.getKey(0));
 		for(int j = m-1; j > i; j--)
 		{
 			children[j] = children[j-1];
 		}
-		children[i] = node;
 		node.setParent(this);
 	}
 	@Override
