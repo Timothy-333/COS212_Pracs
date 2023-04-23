@@ -1,5 +1,3 @@
-import javax.swing.UIDefaults.ProxyLazyValue;
-
 public class Node<T extends Comparable<T>> {
 
 	private Comparable<T>[] keys;
@@ -19,9 +17,12 @@ public class Node<T extends Comparable<T>> {
         this.children = new Node[m];
         this.parent = null;
 	}
-	public Comparable<T> getKey(int i)
+	@SuppressWarnings("unchecked")
+	public T getKey(int i)
 	{
-		return keys[i];
+		if(i >= m-1 || i < 0)
+			return null;
+		return (T)keys[i];
 	}
 	public Node<T> getChildNode(int i)
 	{
@@ -60,27 +61,56 @@ public class Node<T extends Comparable<T>> {
 		}
 		return count;
 	}
-	public void setKey(Comparable<T> data)
+	public void setKey(T data)
 	{
-		int i = getSmallerKeyPos((T)data);
+		if(data == null)
+			return;
+		int i = getSmallerKeyPos(data);
+		if(i == -1)
+			return;
 		for(int j = m-2; j > i; j--)
 		{
 			keys[j] = keys[j-1];
 		}
 		keys[i] = data;
 	}
-	public void setParent(Node<T> parent)
+	public void setKey(int i, T data)
 	{
-		this.parent = parent;
+		if(i >= m-1 || i < 0)
+			return;
+		keys[i] = data;
 	}
 	public void setChildNode(Node<T> node)
 	{
 		int i = getSmallerKeyPos((T)node.getKey(0));
+		if(i == -1)
+			return;
 		for(int j = m-1; j > i; j--)
 		{
 			children[j] = children[j-1];
 		}
-		node.setParent(this);
+		children[i] = node;
+	}
+	public void setChildNode(int i, Node<T> node)
+	{
+		if(i >= m || i < 0)
+			return;
+		children[i] = node;
+	}
+	public void removeChildNode(Node<T> node)
+	{
+		for(int i = 0; i < m; i++)
+		{
+			if(children[i] == node)
+			{
+				for(int j = i; j < m-1; j++)
+				{
+					children[j] = children[j+1];
+				}
+				children[m-1] = null;
+				return;
+			}
+		}
 	}
 	@Override
 	public String toString() {
