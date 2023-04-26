@@ -4,17 +4,19 @@ public class Node<T extends Comparable<T>> {
 	private Node<T>[] children;
 	private int m;
 	public Node<T> parent;
+    public Object left;
+    public Object right;
 
 	/**
 	 * 
-	 * @param m
+	 * @param data
 	 */
 	@SuppressWarnings("unchecked")
-	public Node(int m) 
+	public Node(T data) 
 	{
-		this.m = m;
-        this.keys = (T[])new Comparable[m-1];
-        this.children = new Node[m];
+		this.m = data;
+        this.keys = (T[])new Comparable[data-1];
+        this.children = new Node[data];
         this.parent = null;
 	}
 	@SuppressWarnings("unchecked")
@@ -127,5 +129,8 @@ public class Node<T extends Comparable<T>> {
 		}
 		return res + "]";
 	}
+    public String getData() {
+        return null;
+    }
 
 }
