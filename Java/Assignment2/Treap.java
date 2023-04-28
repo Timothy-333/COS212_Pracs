@@ -70,6 +70,10 @@ public class Treap<T extends Comparable<T>> {
         Node<T> temp = curr.right;
         curr.right = temp.left;
         temp.left = curr;
+        if(curr == root)
+        {
+            root = temp;
+        }
         return temp;
     }
 
@@ -78,15 +82,19 @@ public class Treap<T extends Comparable<T>> {
         Node<T> temp = curr.left;
         curr.left = temp.right;
         temp.right = curr;
+        if(curr == root)
+        {
+            root = temp;
+        }
         return temp;
     }
-
+    private Node<T> removedNode = null;
     public Node<T> remove(T data) 
     {
+        removedNode = null;
         root = remove(root, data);
-        return root;
+        return removedNode;
     }
-    
     private Node<T> remove(Node<T> curr, T data) 
     {
         if (curr == null) 
@@ -107,10 +115,12 @@ public class Treap<T extends Comparable<T>> {
         {
             if (curr.left == null) 
             {
+                removedNode = curr;
                 return curr.right;
             } 
             else if (curr.right == null) 
             {
+                removedNode = curr;
                 return curr.left;
             } 
             else 
@@ -119,21 +129,50 @@ public class Treap<T extends Comparable<T>> {
                 {
                     curr = rotateRight(curr);
                     curr.right = remove(curr.right, data);
-                    return curr;
                 } 
                 else 
                 {
                     curr = rotateLeft(curr);
                     curr.left = remove(curr.left, data);
-                    return curr;
                 }
+                return curr;
             }
         }
     }
-    
+    private Node<T> foundNode = null;
     public Node<T> access(T data) 
     {
-        return null;
+        foundNode = null;
+        access(root, data);
+        return foundNode;
     }
-
+    private Node<T> access(Node<T> curr, T data)
+    {
+        if (curr == null)
+        {
+            return null;
+        }
+        else if (curr.data.compareTo(data) > 0)
+        {
+            curr.left = access(curr.left, data);
+            if (curr.left != null && curr.left.priority >= curr.priority)
+            {
+                curr = rotateRight(curr);
+            }
+        } 
+        else if (curr.data.compareTo(data) < 0) 
+        {
+            curr.right = access(curr.right, data);
+            if (curr.right != null && curr.right.priority >= curr.priority)
+            {
+                curr = rotateLeft(curr);
+            }
+        } 
+        else 
+        {
+            curr.priority++;
+            foundNode = curr;
+        }
+        return curr;
+    }
 }

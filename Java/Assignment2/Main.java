@@ -1,14 +1,14 @@
 public class Main {
 
     public static void main(String[] args) {
-        task1();
-        // task2();
+        // task1();
+        task2();
     }
 
     public static void task1() 
     {
         Treap<Integer> treap = new Treap<Integer>();
-        for (int i = 0; i < 20; i++) 
+        for (int i = 0; i < 5; i++) 
         {
             try 
             {
@@ -20,16 +20,23 @@ public class Main {
             }
         }
         System.out.println(treap);
-        for(int i = 5; i < 15; i++)
+        for(int i = 0; i < 20; i++)
         {
-            treap.remove(i);
+            treap.access(3);
+        }
+        System.out.println(treap.access(4).toString());
+        System.out.println(treap);
+        for(int i = 0; i < 5; i++)
+        {
+            System.out.println(treap.remove(i));
         }
         System.out.println(validTreap(treap));
         System.out.println(treap);
         // System.out.println(validTreap(treap));
     }
 
-    public static void task2() {
+    public static void task2() 
+    {
         /*
          * Note that we also want you to create your own main for this task.
          * 
@@ -83,33 +90,54 @@ public class Main {
             System.out.println("Error: " + e);
         }
 
-        for (String[] row : db.database) {
-            if (row[0] != null) {
+        printDB(db);
+        System.out.println();
+        try {
+            db.removeFirstWhere("Module Code", "LST110");
+            db.removeFirstWhere("Module Code", "FSK700");
+            db.removeFirstWhere("Module Code", "LST110");
+            System.out.println(db.findFirstWhere("Module Code", "WTW124")[1]);
+            
+        } catch (DatabaseException e) {
+            System.out.println("Error: " + e);
+        }
+        printDB(db);
+        System.out.println(db.indexes[0]);
+        System.out.println(db.indexes[1]);
+    }
+    public static void printDB(Database db)
+    {
+        for (String[] row : db.database) 
+        {
+            if (row[0] != null) 
+            {
                 int c = 0;
-                for (String s : row) {
-                    if (c++ == 1) {
+                for (String s : row) 
+                {
+                    if (c++ == 1) 
+                    {
                         System.out.print(String.format("%1$-75s", s));
-                    } else {
+                    } 
+                    else 
+                    {
                         System.out.print(s + "\t");
                     }
                 }
                 System.out.println();
             }
         }
-
-        System.out.println(db.indexes[0]);
-        System.out.println(db.indexes[1]);
     }
-
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
 
-    public static <T extends Comparable<T>> String validTreap(Treap<T> t) {
+    public static <T extends Comparable<T>> String validTreap(Treap<T> t) 
+    {
         return (validTreap(t.root) ? ANSI_GREEN + "Valid\n" + ANSI_RESET : ANSI_RED + "Invalid\n" + ANSI_RESET);
     }
 
-    public static <T extends Comparable<T>> boolean validTreap(Node<T> n) {
+    public static <T extends Comparable<T>> boolean validTreap(Node<T> n) 
+    {
         if (n == null) {
             return true;
         }
