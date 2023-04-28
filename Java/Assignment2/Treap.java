@@ -91,6 +91,10 @@ public class Treap<T extends Comparable<T>> {
     private Node<T> removedNode = null;
     public Node<T> remove(T data) 
     {
+        if (data == null) 
+        {
+            return null;
+        }
         removedNode = null;
         root = remove(root, data);
         return removedNode;

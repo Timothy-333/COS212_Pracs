@@ -96,7 +96,8 @@ public class Main {
             db.removeFirstWhere("Module Code", "LST110");
             db.removeFirstWhere("Module Code", "FSK700");
             db.removeFirstWhere("Module Code", "LST110");
-            System.out.println(db.findFirstWhere("Module Code", "WTW124")[1]);
+            db.removeFirstWhere("Year", "1");
+            System.out.println(db.findFirstWhere("Module Code", "WTW114")[1]);
             
         } catch (DatabaseException e) {
             System.out.println("Error: " + e);

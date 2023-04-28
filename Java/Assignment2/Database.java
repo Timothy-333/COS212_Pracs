@@ -88,7 +88,7 @@ public class Database {
     }
     public String[] removeFirstWhere(String col, String data) throws DatabaseException 
     {
-        String[] removedRow = new String[columnNames.length];
+        String[] removedRow = new String[0];
         int colIndex = 0;
         while(!columnNames[colIndex].equals(col) && colIndex < columnNames.length)
         {
@@ -98,51 +98,46 @@ public class Database {
         {
             throw DatabaseException.invalidColumnName(col);
         }
-        if(indexes[colIndex] == null)
-        {
-            for(int i = 0; i < database.length; i++)
-            {
-                if(database[i][colIndex].equals(data))
-                {
-                    for(int j = 0; j < columnNames.length; j++)
-                    {
-                        removedRow[j] = database[i][j];
-                    }
-                    for(int j = 0; j < columnNames.length; j++)
-                    {
-                        database[i][j] = null;
-                    }
-                    return removedRow;
-                }
-            }
-        }
-        else
+        int row = 0;
+        if(indexes[colIndex] != null)
         {
             Node<Cell> delNode = indexes[colIndex].remove(new Cell(data, 0));
             if(delNode != null)
             {
-                int row = delNode.getData().getRow();
-                for(int i = 0; i < columnNames.length; i++)
-                {
-                    removedRow[i] = database[row][i];
-                }
-                for(int i = 0; i < columnNames.length; i++)
-                {
-                    String delData = database[row][i];
-                    if(delData != null && indexes[i] != null)
-                    {
-                        indexes[i].remove(new Cell(delData, 0));
-                    }
-                    database[row][i] = null;
-                }
-                return removedRow;
-            }
-            else
-            {
-                return new String[0];
+                row = delNode.getData().getRow();
+                removedRow = new String[columnNames.length];
             }
         }
-        return new String[0];
+        else
+        {
+            for(int i = 0; i < database.length; i++)
+            {
+                if(database[i][colIndex] != null && database[i][colIndex].equals(data))
+                {
+                    row = i;
+                    removedRow = new String[columnNames.length];
+                    break;
+                }
+            }
+        }
+        if(removedRow.length == 0)
+        {
+            return removedRow;
+        }
+        for(int i = 0; i < columnNames.length; i++)
+        {
+            removedRow[i] = database[row][i];
+        }
+        for(int i = 0; i < columnNames.length; i++)
+        {
+            String delData = database[row][i];
+            if(delData != null && indexes[i] != null)
+            {
+                indexes[i].remove(new Cell(delData, 0));
+            }
+            database[row][i] = null;
+        }
+        return removedRow;
     }
 
     public String[][] removeAllWhere(String col, String data) throws DatabaseException 
@@ -166,32 +161,34 @@ public class Database {
         {
             throw DatabaseException.invalidColumnName(col);
         }
-        if(indexes[colIndex] == null)
-        {
-            for(int i = 0; i < database.length; i++)
-            {
-                if(database[i][colIndex].equals(data))
-                {
-                    foundRow = database[i];
-                    return foundRow;
-                }
-            }
-        }
-        else
+        if(indexes[colIndex] != null)
         {
             Node<Cell> foundNode = indexes[colIndex].access(new Cell(data, 0));
             if(foundNode != null)
             {
                 int row = foundNode.getData().getRow();
-                foundRow = database[row];
+                for(int i = 0; i < columnNames.length; i++)
+                {
+                    foundRow[i] = database[row][i];
+                }
                 return foundRow;
             }
-            else
+        }
+        else
+        {
+            for(int i = 0; i < database.length; i++)
             {
-                return new String[0];
+                if(database[i][colIndex].equals(data))
+                {
+                    for(int j = 0; j < columnNames.length; j++)
+                    {
+                        foundRow[j] = database[i][j];
+                    }
+                    return foundRow;
+                }
             }
         }
-        return new String[0];
+        return foundRow;
     }
 
     public String[][] findAllWhere(String col, String data) throws DatabaseException 
