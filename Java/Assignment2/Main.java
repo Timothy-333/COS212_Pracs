@@ -90,18 +90,23 @@ public class Main {
             System.out.println("Error: " + e);
         }
 
-        printDB(db);
-        System.out.println();
-        try {
-            db.removeFirstWhere("Module Code", "LST110");
-            db.removeFirstWhere("Module Code", "FSK700");
-            db.removeFirstWhere("Module Code", "LST110");
-            db.removeFirstWhere("Year", "1");
-            System.out.println(db.findFirstWhere("Module Code", "WTW114")[1]);
+        // printDB(db);
+        // System.out.println();
+        // try {
+        //     db.removeAllWhere("Year", "1");
+        //     db.updateFirstWhere("Module Code", "FSK700", "YES420");
+        //     db.updateAllWhere("Year", "5", "69");
+        //     String[][] found = db.findAllWhere("Session", "Sem 2");
+        //     for (String[] row : found) 
+        //     {
+        //         System.out.println(row[0] + "\t" + row[1] + "\t" + row[2] + "\t" + row[3] + "\t" + row[4]);
+        //     }
             
-        } catch (DatabaseException e) {
-            System.out.println("Error: " + e);
-        }
+        // } 
+        // catch (DatabaseException e) 
+        // {
+        //     System.out.println("Error: " + e);
+        // }
         printDB(db);
         System.out.println(db.indexes[0]);
         System.out.println(db.indexes[1]);
