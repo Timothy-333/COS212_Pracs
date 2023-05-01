@@ -46,7 +46,7 @@ public class Treap<T extends Comparable<T>> {
         if (curr.data.compareTo(newNode.data) > 0) 
         {
             curr.left = insert(curr.left, newNode);
-            if(curr.left.priority >= curr.priority)
+            if(curr.left == newNode && curr.left.priority >= curr.priority)
             {
                 curr = rotateRight(curr);
             }
@@ -54,7 +54,7 @@ public class Treap<T extends Comparable<T>> {
         else if (curr.data.compareTo(newNode.data) < 0) 
         {
             curr.right = insert(curr.right, newNode);
-            if(curr.right.priority >= curr.priority)
+            if(curr.right == newNode && curr.right.priority >= curr.priority)
             {
                 curr = rotateLeft(curr);
             }
