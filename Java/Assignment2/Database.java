@@ -90,7 +90,7 @@ public class Database {
     {
         String[] removedRow = new String[0];
         int colIndex = 0;
-        while(!columnNames[colIndex].equals(col) && colIndex < columnNames.length)
+        while(colIndex < columnNames.length && !columnNames[colIndex].equals(col))
         {
             colIndex++;
         }
@@ -127,9 +127,6 @@ public class Database {
         for(int i = 0; i < columnNames.length; i++)
         {
             removedRow[i] = database[row][i];
-        }
-        for(int i = 0; i < columnNames.length; i++)
-        {
             String delData = database[row][i];
             if(delData != null && indexes[i] != null)
             {
@@ -174,7 +171,7 @@ public class Database {
     {
         String[] foundRow = new String[columnNames.length];
         int colIndex = 0;
-        while(!columnNames[colIndex].equals(col) && colIndex < columnNames.length)
+        while(colIndex < columnNames.length && !columnNames[colIndex].equals(col))
         {
             colIndex++;
         }
@@ -398,7 +395,7 @@ public class Database {
     {
         int count = 0;
         int colIndex = 0;
-        while(!columnNames[colIndex].equals(col) && colIndex < columnNames.length)
+        while(colIndex < columnNames.length && !columnNames[colIndex].equals(col))
         {
             colIndex++;
         }

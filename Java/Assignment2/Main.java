@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        // task1();
+        task1();
         task2();
     }
 
@@ -20,7 +20,7 @@ public class Main {
             }
         }
         System.out.println(treap);
-        for(int i = 0; i < 20; i++)
+        for(int i = 0; i < 100; i++)
         {
             treap.access(3);
         }
@@ -90,23 +90,23 @@ public class Main {
             System.out.println("Error: " + e);
         }
 
-        // printDB(db);
-        // System.out.println();
-        // try {
-        //     db.removeAllWhere("Year", "1");
-        //     db.updateFirstWhere("Module Code", "FSK700", "YES420");
-        //     db.updateAllWhere("Year", "5", "69");
-        //     String[][] found = db.findAllWhere("Session", "Sem 2");
-        //     for (String[] row : found) 
-        //     {
-        //         System.out.println(row[0] + "\t" + row[1] + "\t" + row[2] + "\t" + row[3] + "\t" + row[4]);
-        //     }
+        printDB(db);
+        System.out.println();
+        try {
+            db.removeAllWhere("Year", "1");
+            db.updateFirstWhere("Module Code", "FSK700", "YES420");
+            db.updateAllWhere("Year", "2", "69");
+            String[][] found = db.findAllWhere("Session", "Sem 2");
+            for (String[] row : found) 
+            {
+                System.out.println(row[0] + "\t" + row[1] + "\t" + row[2] + "\t" + row[3] + "\t" + row[4]);
+            }
             
-        // } 
-        // catch (DatabaseException e) 
-        // {
-        //     System.out.println("Error: " + e);
-        // }
+        } 
+        catch (DatabaseException e) 
+        {
+            System.out.println("Error: " + e);
+        }
         printDB(db);
         System.out.println(db.indexes[0]);
         System.out.println(db.indexes[1]);

@@ -159,7 +159,7 @@ public class Treap<T extends Comparable<T>> {
         else if (curr.data.compareTo(data) > 0)
         {
             curr.left = access(curr.left, data);
-            if (curr.left != null && curr.left.priority >= curr.priority)
+            if (curr.left != null && curr.left == foundNode && curr.left.priority >= curr.priority)
             {
                 curr = rotateRight(curr);
             }
@@ -167,7 +167,7 @@ public class Treap<T extends Comparable<T>> {
         else if (curr.data.compareTo(data) < 0) 
         {
             curr.right = access(curr.right, data);
-            if (curr.right != null && curr.right.priority >= curr.priority)
+            if (curr.right != null && curr.right == foundNode && curr.right.priority >= curr.priority)
             {
                 curr = rotateLeft(curr);
             }
