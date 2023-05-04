@@ -28,11 +28,7 @@ public class Database {
 
     public void insert(String[] newRowDetails) throws DatabaseException 
     {
-        if(newRowDetails == null)
-        {
-            throw DatabaseException.invalidNumberOfColums();
-        }
-        if(newRowDetails.length != columnNames.length)
+        if(newRowDetails == null || newRowDetails.length != columnNames.length)
         {
             throw DatabaseException.invalidNumberOfColums();
         }
@@ -291,7 +287,6 @@ public class Database {
         else
         {
             return new String[0];
-
         }
     }
 
