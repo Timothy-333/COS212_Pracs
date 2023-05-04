@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        task1();
+        // task1();
         task2();
     }
 
@@ -45,7 +45,6 @@ public class Main {
          */
         String[] columns = { "Module Code", "Description", "Credits", "Year", "Session" };
         Database db = new Database(columns, 100);
-
         String[][] modules = {
                 { "LST110", "Language and study skills 110", "6", "1", "Sem 1" },
                 { "WTW124", "Mathematics 124", "16", "1", "Sem 2" },
@@ -94,8 +93,19 @@ public class Main {
         System.out.println();
         try {
             db.removeAllWhere("Year", "1");
-            db.updateFirstWhere("Module Code", "FSK700", "YES420");
+            db.removeFirstWhere("Module Code", "COS314");
+            String[] updated = db.updateFirstWhere("Module Code", "COS711", "YES420");
+            if(updated.length > 0)
+            {
+                System.out.println(updated[0] + "\t" + updated[1] + "\t" + updated[2] + "\t" + updated[3] + "\t" + updated[4]);
+            }
+            else
+            {
+                System.out.println("No rows updated");
+            }
             db.updateAllWhere("Year", "2", "69");
+            String[] found1 = db.findFirstWhere("Module Code", "FSK700");
+            System.out.println(found1[0] + "\t" + found1[1] + "\t" + found1[2] + "\t" + found1[3] + "\t" + found1[4]);
             String[][] found = db.findAllWhere("Session", "Sem 2");
             for (String[] row : found) 
             {

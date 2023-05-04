@@ -28,16 +28,13 @@ public class Database {
 
     public void insert(String[] newRowDetails) throws DatabaseException 
     {
-        if(newRowDetails.length != columnNames.length)
+        if(newRowDetails == null)
         {
             throw DatabaseException.invalidNumberOfColums();
         }
-        for(int i = 0; i < newRowDetails.length; i++)
+        if(newRowDetails.length != columnNames.length)
         {
-            if(newRowDetails[i] == null)
-            {
-                throw DatabaseException.invalidColumnName(newRowDetails[i]);
-            }
+            throw DatabaseException.invalidNumberOfColums();
         }
         for(int i = 0; i < columnNames.length; i++)
         {
@@ -142,7 +139,7 @@ public class Database {
         int numOccurences = countOccurences(col, data);
         if(numOccurences == 0)
         {
-            return new String[0][0];
+            return new String[0][];
         }
         String[][] removedRows = new String[numOccurences][columnNames.length];
         int index = 0;
@@ -169,7 +166,7 @@ public class Database {
 
     public String[] findFirstWhere(String col, String data) throws DatabaseException 
     {
-        String[] foundRow = new String[columnNames.length];
+        String[] foundRow = new String[0];
         int colIndex = 0;
         while(colIndex < columnNames.length && !columnNames[colIndex].equals(col))
         {
@@ -184,6 +181,7 @@ public class Database {
             Node<Cell> foundNode = indexes[colIndex].access(new Cell(data, 0));
             if(foundNode != null)
             {
+                foundRow = new String[columnNames.length];
                 int row = foundNode.getData().getRow();
                 foundRow = database[row];
                 return foundRow;
@@ -195,6 +193,7 @@ public class Database {
             {
                 if(database[i][colIndex] != null && database[i][colIndex].equals(data))
                 {
+                    foundRow = new String[columnNames.length];
                     foundRow = database[i];
                     return foundRow;
                 }
@@ -208,7 +207,7 @@ public class Database {
         int numOccurences = countOccurences(col, data);
         if(numOccurences == 0)
         {
-            return new String[0][0];
+            return new String[0][];
         }
         String[][] foundRows = new String[numOccurences][columnNames.length];
         int index = 0;
@@ -253,10 +252,9 @@ public class Database {
 
     public String[] updateFirstWhere(String col, String updateCondition, String data) throws DatabaseException 
     {
-        String[] updatedRow = new String[0];
-        String[] oldRow = new String[columnNames.length];
         int colIndex = 0;
-        while(!columnNames[colIndex].equals(col) && colIndex < columnNames.length)
+        int row = -1;
+        while(colIndex < columnNames.length && !columnNames[colIndex].equals(col))
         {
             colIndex++;
         }
@@ -264,79 +262,50 @@ public class Database {
         {
             throw DatabaseException.invalidColumnName(col);
         }
-        try
+        if(indexes[colIndex] != null)
         {
-            oldRow = removeFirstWhere(col, updateCondition);
+            Node<Cell> remNode = indexes[colIndex].remove(new Cell(updateCondition, 0));
+            if(remNode == null)
+            {
+                return new String[0];
+            }
+            row = remNode.getData().getRow();
+            indexes[colIndex].insert(new Cell(data, row));
         }
-        catch(DatabaseException e)
+        else
         {
-            throw e;
+            for(int i = 0; i < database.length; i++)
+            {
+                if(database[i][colIndex] != null && database[i][colIndex].equals(updateCondition))
+                {
+                    row = i;
+                    break;
+                }
+            }
         }
-        if(oldRow.length == 0)
+        if(row >= 0 && row < database.length && database[row][colIndex].equals(updateCondition))
         {
-            return updatedRow;
+            database[row][colIndex] = data;
+            return database[row];
         }
-        updatedRow = new String[columnNames.length];
-        for(int i = 0; i < columnNames.length; i++)
+        else
         {
-            updatedRow[i] = oldRow[i];
+            return new String[0];
+
         }
-        updatedRow[colIndex] = data;
-        try
-        {
-            insert(updatedRow);
-        }
-        catch(DatabaseException e)
-        {
-            throw e;
-        }
-        return updatedRow;
     }
 
     public String[][] updateAllWhere(String col, String updateCondition, String data) throws DatabaseException 
     {
-        String[][] updatedRows = new String[0][0];
-        String[][] oldRows = new String[0][0];
-        int colIndex = 0;
-        while(!columnNames[colIndex].equals(col) && colIndex < columnNames.length)
+        int numOccurences = countOccurences(col, updateCondition);
+        if(numOccurences == 0)
         {
-            colIndex++;
+            return new String[0][];
         }
-        if(colIndex == columnNames.length)
+        String[][] updatedRows = new String[numOccurences][columnNames.length];
+        for(int i = 0; i < numOccurences; i++)
         {
-            throw DatabaseException.invalidColumnName(col);
-        }
-        try
-        {
-            oldRows = removeAllWhere(col, updateCondition);
-        }
-        catch(DatabaseException e)
-        {
-            throw e;
-        }
-        if(oldRows.length == 0)
-        {
-            return updatedRows;
-        }
-        updatedRows = new String[oldRows.length][columnNames.length];
-        for(int i = 0; i < oldRows.length; i++)
-        {
-            for(int j = 0; j < columnNames.length; j++)
-            {
-                updatedRows[i][j] = oldRows[i][j];
-            }
-            updatedRows[i][colIndex] = data;
-        }
-        try
-        {
-            for(int i = 0; i < updatedRows.length; i++)
-            {
-                insert(updatedRows[i]);
-            }
-        }
-        catch(DatabaseException e)
-        {
-            throw e;
+            updatedRows[i] = updateFirstWhere(col, updateCondition, data);
         }
         return updatedRows;
     }
@@ -344,7 +313,7 @@ public class Database {
     public Treap<Cell> generateIndexOn(String col) throws DatabaseException 
     {
         int index = 0;
-        while(!columnNames[index].equals(col) && index < columnNames.length)
+        while(index < columnNames.length && !columnNames[index].equals(col))
         {
             index++;
         }
