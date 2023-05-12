@@ -8,10 +8,11 @@ public class Graph
     private Integer[][] adjacencyMatrix;
     private int numVertices;
     private int numEdges;
+    private int num[];
 
     public Graph(String fileName) 
     {
-        if(fileName == "")
+        if(fileName == "" || fileName == null)
         {
             vertices = new String[0];
             adjacencyMatrix = new Integer[0][];
@@ -23,21 +24,41 @@ public class Graph
             try
             {
                 Scanner file = new Scanner(new File(fileName));
-                numVertices = file.nextInt();
+                if(file.hasNext())
+                    numVertices = file.nextInt();
                 numEdges = 0;
-                vertices = new String[numVertices];
-                adjacencyMatrix = new Integer[numVertices][numVertices];
-                for(int i = 0; i < numVertices; i++)
+                vertices = new String[0];
+                adjacencyMatrix = new Integer[0][];
+                if(file.hasNext())
                 {
-                    vertices[i] = file.next();
+                    vertices = new String[numVertices];
+                }
+                else
+                {
+                    numVertices = 0;
+                    return;
                 }
                 for(int i = 0; i < numVertices; i++)
                 {
-                    for(int j = 0; j < numVertices; j++)
+                    if(file.hasNext())
+                        vertices[i] = file.next();
+                }
+                if(file.hasNext())
+                {
+                    adjacencyMatrix = new Integer[numVertices][numVertices];
+                    for(int i = 0; i < numVertices; i++)
                     {
-                        adjacencyMatrix[i][j] = file.nextInt();
-                        if(adjacencyMatrix[i][j] != 0)
-                            numEdges++;
+                        for(int j = 0; j < numVertices; j++)
+                        {
+                            if(file.hasNext())
+                            {
+                                adjacencyMatrix[i][j] = file.nextInt();
+                                if(adjacencyMatrix[i][j] != 0)
+                                    numEdges++;
+                            }
+                            else
+                                adjacencyMatrix[i][j] = 0;
+                        }
                     }
                 }
             }
@@ -47,11 +68,18 @@ public class Graph
             }
         }
     }
-
     public void insertVertex(String name) 
     {
-        if(name == "")
+        if(name == "" || name == null)
             return;
+        for (int i = 0; i < numVertices; i++) 
+        {
+            if (vertices[i] == null || vertices[i] == "") 
+            {
+                vertices[i] = name;
+                return;
+            }
+        }
         numVertices++;
         String[] tempVertices = new String[numVertices];
         for(int i = 0; i < numVertices - 1; i++)
@@ -65,14 +93,14 @@ public class Graph
         {
             for(int j = 0; j < numVertices; j++)
             {
-                if(i < numVertices && j < numVertices)
+                if(i < numVertices - 1 && j < numVertices - 1)
                     tempAdjacencyMatrix[i][j] = adjacencyMatrix[i][j];
                 else
                     tempAdjacencyMatrix[i][j] = 0;
             }
         }
+        adjacencyMatrix = tempAdjacencyMatrix;
     }
-
     public void insertEdge(String start, String end, int weight) 
     {
         if(weight == 0 || start.equals(end))
@@ -81,7 +109,7 @@ public class Graph
         int endIndex = 0;
         boolean foundStart = false;
         boolean foundEnd = false;
-        for(int i = 0; i < vertices.length; i++)
+        for(int i = 0; i < numVertices; i++)
         {
             if(vertices[i].equals(start))
             {
@@ -104,65 +132,52 @@ public class Graph
 
     public void removeVertex(String name) 
     {
-        int index = 0;
+        int index = -1;
         boolean found = false;
-        for(int i = 0; i < vertices.length; i++)
+        for (int i = 0; i < numVertices; i++) 
         {
-            if(vertices[i].equals(name))
+            if (vertices[i].equals(name)) 
             {
                 index = i;
                 found = true;
+                break;
             }
         }
-        if(!found)
+    
+        if (!found) 
+        {
             return;
+        }
         numVertices--;
         String[] tempVertices = new String[numVertices];
-        for(int i = 0; i < index; i++)
-        {
-            tempVertices[i] = vertices[i];
-        }
-        for(int i = index + 1; i < numVertices-1; i++)
-        {
-            tempVertices[i - 1] = vertices[i];
-        }
+        System.arraycopy(vertices, 0, tempVertices, 0, index);
+        System.arraycopy(vertices, index + 1, tempVertices, index, numVertices - index);
         vertices = tempVertices;
+        int edgeCount = 0;
         Integer[][] tempAdjacencyMatrix = new Integer[numVertices][numVertices];
-        for(int i = 0; i < numVertices; i++)
+        for (int i = 0; i < numVertices; i++) 
         {
-            for(int j = 0; j < numVertices; j++)
+            for (int j = 0; j < numVertices; j++) 
             {
-                if(i < index && j < index)
-                    tempAdjacencyMatrix[i][j] = adjacencyMatrix[i][j];
-                else if(i < index && j >= index)
+                int originalRow = i < index ? i : i + 1;
+                int originalCol = j < index ? j : j + 1;
+                tempAdjacencyMatrix[i][j] = adjacencyMatrix[originalRow][originalCol];
+                if (tempAdjacencyMatrix[i][j] != 0) 
                 {
-                    tempAdjacencyMatrix[i][j] = adjacencyMatrix[i][j + 1];
-                    if(tempAdjacencyMatrix[i][j] != 0)
-                        numEdges--;
-                }
-                else if(i >= index && j < index)
-                {
-                    tempAdjacencyMatrix[i][j] = adjacencyMatrix[i + 1][j];
-                    if(tempAdjacencyMatrix[i][j] != 0)
-                        numEdges--;
-                }
-                else
-                {
-                    tempAdjacencyMatrix[i][j] = adjacencyMatrix[i + 1][j + 1];
-                    if(tempAdjacencyMatrix[i][j] != 0)
-                        numEdges--;
+                    edgeCount++;
                 }
             }
         }
-    }
-
+        numEdges = edgeCount;
+        adjacencyMatrix = tempAdjacencyMatrix;
+    }    
     public void removeEdge(String start, String end) 
     {
         int startIndex = 0;
         int endIndex = 0;
         boolean foundStart = false;
         boolean foundEnd = false;
-        for(int i = 0; i < vertices.length; i++)
+        for(int i = 0; i < numVertices; i++)
         {
             if(vertices[i].equals(start))
             {
@@ -186,10 +201,16 @@ public class Graph
     @Override
     public String toString() 
     {
-        String output = "(" + numVertices + "," + numEdges + ")\t";
+        String output = "(" + numVertices + "," + numEdges + ")";
+        if(numVertices == 0)
+            return output;
+        output += "\t";
         for(int i = 0; i < numVertices; i++)
         {
-            output += vertices[i] + "\t";
+            if(i < numVertices - 1)
+                output += vertices[i] + "\t";
+            else
+                output += vertices[i];
         }
         output += "\n";
         for(int i = 0; i < numVertices; i++)
@@ -197,58 +218,42 @@ public class Graph
             output += vertices[i] + "\t";
             for(int j = 0; j < numVertices; j++)
             {
-                output += adjacencyMatrix[i][j] + "\t";
+                if(j < numVertices - 1)
+                    output += adjacencyMatrix[i][j] + "\t";
+                else
+                    output += adjacencyMatrix[i][j];
             }
-            output += "\n";
+            if(i < numVertices - 1)
+                output += "\n";
         }
         return output;
     }
-//     depthFirst()
-//   for all vertices v
-//     num(v) = 0;
-//   edges = null;
-//   i = 1; // global counter
-//   while there is a vertex v such that num(v) is 0
-//     DFS(v); // initiate recursion
-//   output edges;
 
-// DFS(v) // recursive function
-//   num(v) = i++; // visit
-//   for all vertices u adjacent to v
-//     if num(u) is 0 //unvisited
-//       attach edge(uv) to edges;
-//       DFS(u); // recursion
-    private int num[] = new int[numVertices];
     int visited = 0;
     String output = "";
     public String depthFirstTraversal() 
     {
+        output = "";
+        num = new int[numVertices];
         for(int i = 0; i < numVertices; i++)
         {
             num[i] = 0;
         }
         visited = 1;
-        while(true)
+        for(int i = 0; i < numVertices; i++)
         {
-            int v = -1;
-            for(int i = 0; i < numVertices; i++)
+            if(num[i] == 0)
             {
-                if(num[i] == 0)
-                {
-                    v = i;
-                    break;
-                }
+                DFS(i);
             }
-            if(v == -1)
-                break;
-            DFS(v);
         }
         return output;
     }
     private void DFS(int v)
     {
+        output += "[" + vertices[v] + "]";
         num[v] = visited++;
-        for(int i = 0; i < vertices.length; i++)
+        for(int i = 0; i < numVertices; i++)
         {
             if(adjacencyMatrix[v][i] != 0)
             {
@@ -258,31 +263,224 @@ public class Graph
                 }
             }
         }
-        output += "[" + vertices[v] + "]";
     }
+    int queue[] = new int[numVertices];
     public String breadthFirstTraversal() 
     {
-        return "";
+        queue = new int[numVertices];
+        output = "";
+        num = new int[numVertices];
+        for(int i = 0; i < numVertices; i++)
+        {
+            num[i] = 0;
+        }
+        visited = 1;
+        for(int i = 0; i < numVertices; i++)
+        {
+            if(num[i] == 0)
+            {
+                BFS(i);
+            }
+        }
+        return output;
     }
-
+    private void BFS(int v)
+    {
+        output += "[" + vertices[v] + "]";
+        num[v] = visited++;
+        int front = 0;
+        int back = 0;
+        queue[back++] = v;
+        while(front != back)
+        {
+            int u = queue[front++];
+            for(int i = 0; i < numVertices; i++)
+            {
+                if(adjacencyMatrix[u][i] != 0 && num[i] == 0)
+                {
+                    output += "[" + vertices[i] + "]";
+                    num[i] = visited++;
+                    queue[back++] = i;
+                }
+            }
+        }
+    }
     public Double[][] shortestPaths() 
     {
-        return null;
+        Double[][] out = new Double[numVertices][numVertices];
+        for(int i = 0; i < numVertices; i++)
+        {
+            for(int j = 0; j < numVertices; j++)
+            {
+                out[i][j] = Double.POSITIVE_INFINITY;
+            }
+        }
+        for(int i = 0; i < numVertices; i++)
+        {
+            out[i][i] = 0.0;
+        }
+        for(int i = 0; i < numVertices; i++)
+        {
+            for(int j = 0; j < numVertices; j++)
+            {
+                if(adjacencyMatrix[i][j] != 0)
+                {
+                    out[i][j] = (double)adjacencyMatrix[i][j];
+                }
+            }
+        }
+        for(int i = 0; i < numVertices; i++)
+        {
+            for(int j = 0; j < numVertices; j++)
+            {
+                for(int k = 0; k < numVertices; k++)
+                {
+                    if(out[j][k] > out[j][i] + out[i][k])
+                    {
+                        out[j][k] = out[j][i] + out[i][k];
+                    }
+                }
+            }
+        }
+        return out;
     }
 
     public Double shortestPath(String start, String end) 
     {
-        return null;
-
+        int startIndex = 0;
+        int endIndex = 0;
+        boolean foundStart = false;
+        boolean foundEnd = false;
+        for(int i = 0; i < numVertices; i++)
+        {
+            if(vertices[i].equals(start))
+            {
+                startIndex = i;
+                foundStart = true;
+            }
+            else if(vertices[i].equals(end))
+            {
+                endIndex = i;
+                foundEnd = true;
+            }
+        }
+        if(!foundStart || !foundEnd)
+            return null;
+        return shortestPaths()[startIndex][endIndex];
     }
-
-    public boolean cycleDetection() 
+    int[] pred = new int[numVertices];
+    boolean result = false;
+    public boolean cycleDetection()
     {
-        return false;
+        result = false;
+        num = new int[numVertices];
+        pred = new int[numVertices];
+        for(int i = 0; i < numVertices; i++)
+        {
+            num[i] = 0;
+        }
+        visited = 1;
+        for(int i = 0; i < numVertices; i++)
+        {
+            if(num[i] == 0)
+            {
+                cycleDetection(i);
+            }
+        }
+        return result;
     }
-
+    private void cycleDetection(int v)
+    {
+        num[v] = visited++;
+        for(int i = 0; i < numVertices; i++)
+        {
+            if(adjacencyMatrix[v][i] != 0)
+            {
+                if(num[i] == 0)
+                {
+                    pred[i] = v;
+                    cycleDetection(i);
+                }
+                else if(pred[v] != i)
+                {
+                    pred[i] = v;
+                    result = true;
+                    break;
+                }
+            }
+        }
+    }
+    int[] stack = new int[numVertices];
+    int top = 0;
     public String stronglyConnectedComponents() 
     {
-        return "";
+        top = 0;
+        stack = new int[numVertices];
+        output = "";
+        num = new int[numVertices];
+        pred = new int[numVertices];
+        for(int i = 0; i < numVertices; i++)
+        {
+            num[i] = 0;
+        }
+        visited = 1;
+        for(int i = 0; i < numVertices; i++)
+        {
+            if(num[i] == 0)
+            {
+                strongDFS(i);
+            }
+        }
+        return output;
+    }
+    private void strongDFS(int v) 
+    {
+        pred[v] = num[v] = visited++;
+        stack[top++] = v;
+        for (int u = 0; u < numVertices; u++) 
+        {
+            if (adjacencyMatrix[v][u] != 0) 
+            {
+                if (num[u] == 0) 
+                {
+                    strongDFS(u);
+                    pred[v] = Math.min(pred[v], pred[u]);
+                } 
+                else if (num[u] < num[v] && isOnStack(u)) 
+                {
+                    pred[v] = Math.min(pred[v], num[u]);
+                }
+            }
+        }
+        if (pred[v] == num[v]) 
+        {
+            int w = pop();
+            while (w != v) {
+                output += "[" + vertices[w] + "]";
+                w = pop();
+            }
+            output += "[" + vertices[w] + "]\n";
+        }
+    }
+    
+    private boolean isOnStack(int vertex) 
+    {
+        for (int i = 0; i < top; i++) 
+        {
+            if (stack[i] == vertex) 
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private int pop() 
+    {
+        return stack[--top];
+    }
+    public String[] getVertices()
+    {
+        return vertices;
     }
 }
