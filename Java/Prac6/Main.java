@@ -3,7 +3,7 @@ public class Main {
         Graph g = new Graph("graph.txt");
         System.out.println(g);
         System.out.println("DFS:" + g.depthFirstTraversal());
-        System.out.println("BFS:" + g.breadthFirstTraversal());
-        System.out.println("Strongly Connected:\n" + g.stronglyConnectedComponents());
+        // System.out.println("BFS:" + g.breadthFirstTraversal());
+        // System.out.println("Strongly Connected:\n" + g.stronglyConnectedComponents());
     }
 }
