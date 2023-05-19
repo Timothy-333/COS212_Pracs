@@ -199,6 +199,8 @@ public class Graph
     }
     public Graph minSpanningTree() 
     {
+        if(vertices.length == 0 || edges.length == 0)
+            return null;
         Graph result = new Graph();
         int treeSize = 0;
         Edge[] sortEdges = new Edge[edges.length];
@@ -262,22 +264,32 @@ public class Graph
         }
     
         int uncoloredVerticesLength = uncoloredVertices.length;
-    
         while (uncoloredVerticesLength > 0) 
         {
             Vertex v = getMaxVertex(uncoloredVertices);
             int j = 0;
     
             Vertex[] neighbors = getNeighbours(v);
+            Boolean[] colorUsedByNeighbor = new Boolean[colors.length];
             for (Vertex u : neighbors) 
             {
                 if (u.colorIndex > -1) 
                 {
-                    if (u.colorIndex >= j) 
-                    {
-                        j = u.colorIndex + 1;
-                    }
-    
+                    colorUsedByNeighbor[u.colorIndex] = true;
+                }
+            }
+            for (int i = 0; i < colorUsedByNeighbor.length; i++) 
+            {
+                if (colorUsedByNeighbor[i] == null) 
+                {
+                    j = i;
+                    break;
+                }
+            }
+            for (Vertex u : neighbors) 
+            {
+                if (u.colorIndex > -1) 
+                {
                     Vertex[] uNeighbors = getNeighbours(u);
                     boolean noAdjacentColor = true;
     
@@ -308,7 +320,6 @@ public class Graph
             {
                 verticesArray[i] = colorVertices[colorIndex][i];
             }
-    
             verticesArray[length - 1] = v;
             colorVertices[colorIndex] = verticesArray;
             colorVerticesLength[colorIndex]++;
@@ -329,27 +340,48 @@ public class Graph
             uncoloredVerticesLength--;
         }
     
-        return resizeColorVertices(colorVertices, colorVerticesLength);
+        return resizeColorVertices(colorVertices);
     }
-    private Vertex[][] resizeColorVertices(Vertex[][] colorVertices, int[] colorVerticesLength) 
+    private Vertex[][] resizeColorVertices(Vertex[][] colorVertices) 
     {
-        Vertex[][] resizedColorVertices = new Vertex[colorVertices.length][];
-    
+        int length = 0;
         for (int i = 0; i < colorVertices.length; i++) 
         {
-            resizedColorVertices[i] = new Vertex[colorVerticesLength[i]];
-            int index = 0;
-    
-            for (int j = 0; j < vertices.length; j++) 
+            if (colorVertices[i] != null) {
+                length++;
+            }
+        }
+        Vertex[][] result = new Vertex[length][];
+        int index = 0;
+        for (int i = 0; i < colorVertices.length; i++) 
+        {
+            if (colorVertices[i] != null) 
             {
-                if (vertices[j].colorIndex == i) 
+                bubbleSort(colorVertices[i]);
+                result[index] = colorVertices[i];
+                index++;
+            }
+        }
+        return result;
+    }
+    
+    private void bubbleSort(Vertex[] vertices) 
+    {
+        int n = vertices.length;
+        for (int i = 0; i < n - 1; i++) 
+        {
+            for (int j = 0; j < n - i - 1; j++) 
+            {
+                if (vertices[j].compareTo(vertices[j + 1]) > 0) 
                 {
-                    resizedColorVertices[i][index++] = vertices[j];
+                    Vertex temp = vertices[j];
+                    vertices[j] = vertices[j + 1];
+                    vertices[j + 1] = temp;
                 }
             }
         }
-        return resizedColorVertices;
-    }    
+    }
+      
     @Override
     public String toString() 
     {
@@ -385,7 +417,10 @@ public class Graph
                     result += "\t";
                 }
             }
-            result += "\n";
+            if (i < vertices.length - 1) 
+            {
+                result += "\n";
+            }
         }
 
         return result;
