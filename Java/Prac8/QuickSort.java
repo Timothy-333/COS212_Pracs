@@ -2,8 +2,10 @@ public class QuickSort <T extends Comparable<T>> extends Sort<T> {
     @Override
     @SuppressWarnings("unchecked")
     public Comparable<T>[] sort(Comparable<T>[] arr) {
-        printArr(arr);
+        // printArr(arr);
         //Add code below this line
+        if(arr == null || arr.length == 0)
+            return arr;
         return recSort(arr, new Comparable[arr.length]);
     }
 
@@ -11,10 +13,10 @@ public class QuickSort <T extends Comparable<T>> extends Sort<T> {
     private Comparable<T>[] recSort(Comparable<T>[] arr, Comparable<T>[] resultingArr){
         printArr(arr);
         //Add code below this line 
-        if (arr.length <= 1) {
+        if (arr.length <= 1) 
+        {
             return arr;
         }
-    
         int pivotPoint = getPivotPoint(arr);
         Comparable<T> pivot = arr[pivotPoint];
     
@@ -51,7 +53,6 @@ public class QuickSort <T extends Comparable<T>> extends Sort<T> {
         for (int i = 0; i < rightArr.length; i++) {
             resultingArr[index++] = rightArr[i];
         }
-    
         return resultingArr;
     }
     private int getPivotPoint(Comparable<T>[] arr){

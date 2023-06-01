@@ -13,6 +13,7 @@ public class App {
         arr[5] = 2;
         arr[6] = 8;
         arr[7] = 1;
+        // arr[8] = 6;
         return arr;
     }
 
@@ -23,16 +24,16 @@ public class App {
         Comparable<Integer>[] result = quickSort.sort(getArray());
         System.out.println("Final result: ");
         Sort.printArr(result);
-        // System.out.println("Mergesort example:");
-        // MergeSort<Integer> mergeSort = new MergeSort<>();
-        // result = mergeSort.sort(getArray());
-        // System.out.println("Final result: ");
-        // Sort.printArr(result);
-        // System.out.println("Countsort example:");
-        // CountSort<Integer> countSort = new CountSort<>();
-        // result =  countSort.sort(getArray());
-        // System.out.println("Final result: ");
-        // Sort.printArr(result);
+        System.out.println("Mergesort example:");
+        MergeSort<Integer> mergeSort = new MergeSort<>();
+        result = mergeSort.sort(getArray());
+        System.out.println("Final result: ");
+        Sort.printArr(result);
+        System.out.println("Countsort example:");
+        CountSort<Integer> countSort = new CountSort<>();
+        result =  countSort.sort(getArray());
+        System.out.println("Final result: ");
+        Sort.printArr(result);
     }
 }
 
