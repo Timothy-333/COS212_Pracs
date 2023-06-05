@@ -1,24 +1,38 @@
-public class Node {
+public class Node 
+{
     private final String annotation;
-    private final /*Own data structure goes here of type Edge*/ edges;
+    private final Array edges;
     
-    public Node(String annot){
-        //TODO: Implement the function
+    public Node(String annot)
+    {
+        annotation = annot;
+        edges = new Array();
+    }
+    public Node(Node other, boolean deepCopy)
+    {
+        annotation = other.annotation;
+        if(deepCopy)
+            edges = new Array(other.edges, true);
+        else
+            edges = other.edges;
+    }
+    public void addEdge(Node nextNode, String annotation, int compTime)
+    {
+        edges.add(new Edge(annotation, nextNode, compTime));
     }
 
-    public void addEdge(Node nextNode, String annotation, int compTime){
-        //TODO: Implement the function
+    public String getAnnotation()
+    {
+        return annotation;
     }
 
-    public String getAnnotation(){
-        //TODO: Implement the function
+    public Edge[] getEdges()
+    {
+        return (Edge[])edges.toArray();
     }
 
-    public Edge[] getEdges(){
-        //TODO: Implement the function
-    }
-
-    public String toString(){
+    public String toString()
+    {
         //Provided function, do not alter!!!
         String res = annotation + ":\n";
         if(edges.toArray().length == 0)

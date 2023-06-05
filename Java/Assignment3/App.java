@@ -21,15 +21,15 @@ public class App {
         cfg.addEdge("E4", cfg.getNode("N4"), cfg.getNode("N3"), 0);
         cfg.addEdge("E5", cfg.getNode("N3"), cfg.getNode("N5"), 0);
         printGraph(cfg);
-        Path[] simplePaths = cfg.getSimplePaths();
-        for(Path p: simplePaths){
-            System.out.println(p.toString());
-        }
-        printBreaker();
-        Path[] primePaths = cfg.getPrimePaths();
-        for(Path p: primePaths){
-            System.out.println(p.toString());
-        }
+        // Path[] simplePaths = cfg.getSimplePaths();
+        // for(Path p: simplePaths){
+        //     System.out.println(p.toString());
+        // }
+        // printBreaker();
+        // Path[] primePaths = cfg.getPrimePaths();
+        // for(Path p: primePaths){
+        //     System.out.println(p.toString());
+        // }
     }
 
     public static void printGraph(CFG graph){
