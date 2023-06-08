@@ -62,25 +62,51 @@ public class CFG {
 
     public CFG[] splitGraph()
     {
-        return null;
+        if(isSESE())
+        {
+            CFG[] res = new CFG[1];
+            res[0] = this;
+            return res;
+        }
+        CFG[] res = new CFG[exitNodes.toArray().length];
+        for(int i = 0; i < exitNodes.toArray().length; i++)
+        {
+            Node exitNode = (Node)exitNodes.toArray()[i];
+            res[i] = new CFG();
+            res[i].addStartNode(startNode);
+            res[i].addExitNode(exitNode);
+            for(Object n: nodes.toArray())
+            {
+                if(isReachable((Node)n, exitNode))
+                {
+                    res[i].addNode((Node)n);
+                    for(Object e: ((Node)n).getEdges())
+                    {
+                        if(isReachable(((Edge)e).getNext(), exitNode))
+                            res[i].addEdge(((Edge)e).getAnnotation(), (Node)n, ((Edge)e).getNext(), ((Edge)e).getCompTime());
+                    }
+                }
+            }
+        }
+        return res;
     }
     Boolean visited[];
+    Boolean isReachable = false;
     public boolean isReachable(Node startNode, Node goalNode)
     {
+        if(startNode == null || goalNode == null)
+            return false;
+        isReachable = false;
         visited = new Boolean[nodes.toArray().length];
         for(int i = 0; i < nodes.toArray().length; i++)
             visited[i] = false;
-        System.out.println(startNode.getEdges().length);
-        for(int i = 0; i < startNode.getEdges().length; i++)
-        {
-            System.out.println(startNode.getEdges()[i].getNext());
-        }
-        return DFS(startNode, goalNode);
+        DFS(startNode, goalNode);
+        return isReachable;
     }
-    private boolean DFS(Node startNode, Node goalNode)
+    private void DFS(Node startNode, Node goalNode)
     {
         if(startNode == goalNode)
-            return true;
+            isReachable = true;
         int v = nodes.indexOf(startNode);
         visited[v] = true;
         for(int i = 0; i < startNode.getEdges().length; i++)
@@ -89,7 +115,6 @@ public class CFG {
             if(!visited[nodes.indexOf(nextNode)])
                 DFS(nextNode, goalNode);
         }
-        return false;
     }
     public int compTimeRequired(Path p)
     {
@@ -97,12 +122,26 @@ public class CFG {
             return -1;
         return p.computationalCostOfPath();
     }
-
+    int[] compTime;
+    Node[] prevNode;
+    Node[] unvisiteNodes;
     public Path shortestCompTimePath(Node sN, Node gN)
     {
+        if(sN == null || gN == null)
+            return null;
+        compTime = new int[nodes.toArray().length];
+        prevNode = new Node[nodes.toArray().length];
+        unvisiteNodes = new Node[nodes.toArray().length];
+        for(int i = 0; i < nodes.toArray().length; i++)
+        {
+            compTime[i] = Integer.MAX_VALUE;
+            prevNode[i] = null;
+        }
+        
+        compTime[nodes.indexOf(sN)] = 0;
+
         return null;
     }
-
     public Path[] getPrimePaths()
     {
         return null;
@@ -126,8 +165,6 @@ public class CFG {
     {
         if(nodes.contains(node) || node == null)
             return;
-        if(startNode == null)
-            startNode = node;
         nodes.add(node);
     }
 
@@ -145,8 +182,7 @@ public class CFG {
         if(exitNodes.contains(n) || n == null)
             return;
         exitNodes.add(n);
-        if(!nodes.contains(n))
-            nodes.add(n);
+        addNode(n);
     }
 
     public void addStartNode(Node n)

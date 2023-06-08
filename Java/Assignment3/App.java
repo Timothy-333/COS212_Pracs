@@ -9,17 +9,20 @@ public class App {
         Node N3 = new Node("N3");
         Node N4 = new Node("N4");
         Node N5 = new Node("N5");
+        Node N6 = new Node("N6");
         CFG cfg = new CFG();
         cfg.addStartNode(N1);
         cfg.addNode(N2);
         cfg.addNode(N3);
         cfg.addNode(N4);
         cfg.addExitNode(N5);
+        // cfg.addExitNode(N6);
         cfg.addEdge("E1", cfg.getNode("N1"), cfg.getNode("N2"), 0);
         cfg.addEdge("E2", cfg.getNode("N2"), cfg.getNode("N3"), 0);
         cfg.addEdge("E3", cfg.getNode("N3"), cfg.getNode("N4"), 0);
         cfg.addEdge("E4", cfg.getNode("N4"), cfg.getNode("N3"), 0);
         cfg.addEdge("E5", cfg.getNode("N3"), cfg.getNode("N5"), 0);
+        
         printGraph(cfg);
         // Path[] simplePaths = cfg.getSimplePaths();
         // for(Path p: simplePaths){
@@ -31,7 +34,8 @@ public class App {
         //     System.out.println(p.toString());
         // }
         // printBreaker();
-        System.out.println(cfg.isReachable(N1, N2));
+        System.out.println(cfg.isReachable(N1, N5));
+        System.out.println(cfg.isReachable(N1, N3));
         System.out.println(cfg.isValid());
         System.out.println(cfg.isSESE());
     }

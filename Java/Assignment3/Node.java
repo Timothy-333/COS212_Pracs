@@ -28,7 +28,10 @@ public class Node
 
     public Edge[] getEdges()
     {
-        return (Edge[])edges.toArray();
+        Edge[] res = new Edge[edges.toArray().length];
+        for(int i = 0; i < edges.toArray().length; i++)
+            res[i] = (Edge)edges.toArray()[i];
+        return res;
     }
 
     public String toString()
