@@ -30,11 +30,33 @@ public class CFG {
 
     public boolean isValid()
     {
+        if(startNode == null)
+            return false;
+        if(exitNodes.toArray().length == 0)
+            return false;
+        for(Object n: nodes.toArray())
+        {
+            Boolean canReachExit = false;
+            for(Object exitNode: exitNodes.toArray())
+            {
+                if(isReachable((Node)n, (Node)exitNode))
+                {
+                    canReachExit = true;
+                    break;
+                }
+            }
+            if(!canReachExit)
+                return false;
+        }
         return true;
     }
 
     public boolean isSESE()
     {
+        if(exitNodes.toArray().length > 1)
+            return false;
+        if(!isValid())
+            return false;
         return true;
     }
 
@@ -42,15 +64,38 @@ public class CFG {
     {
         return null;
     }
-
+    Boolean visited[];
     public boolean isReachable(Node startNode, Node goalNode)
     {
-        return true;
+        visited = new Boolean[nodes.toArray().length];
+        for(int i = 0; i < nodes.toArray().length; i++)
+            visited[i] = false;
+        System.out.println(startNode.getEdges().length);
+        for(int i = 0; i < startNode.getEdges().length; i++)
+        {
+            System.out.println(startNode.getEdges()[i].getNext());
+        }
+        return DFS(startNode, goalNode);
     }
-
+    private boolean DFS(Node startNode, Node goalNode)
+    {
+        if(startNode == goalNode)
+            return true;
+        int v = nodes.indexOf(startNode);
+        visited[v] = true;
+        for(int i = 0; i < startNode.getEdges().length; i++)
+        {
+            Node nextNode = startNode.getEdges()[i].getNext();
+            if(!visited[nodes.indexOf(nextNode)])
+                DFS(nextNode, goalNode);
+        }
+        return false;
+    }
     public int compTimeRequired(Path p)
     {
-        return 0;
+        if(p == null)
+            return -1;
+        return p.computationalCostOfPath();
     }
 
     public Path shortestCompTimePath(Node sN, Node gN)

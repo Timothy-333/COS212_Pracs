@@ -30,6 +30,10 @@ public class App {
         // for(Path p: primePaths){
         //     System.out.println(p.toString());
         // }
+        // printBreaker();
+        System.out.println(cfg.isReachable(N1, N2));
+        System.out.println(cfg.isValid());
+        System.out.println(cfg.isSESE());
     }
 
     public static void printGraph(CFG graph){

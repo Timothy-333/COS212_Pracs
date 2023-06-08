@@ -86,4 +86,11 @@ public class Array
                 return array[i];
         return null;
     }
+    public int indexOf(Object o)
+    {
+        for(int i = 0; i < size; i++)
+            if(array[i].equals(o))
+                return i;
+        return -1;
+    }
 }
