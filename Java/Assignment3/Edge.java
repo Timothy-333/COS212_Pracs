@@ -14,7 +14,7 @@ public class Edge
     {
         annotation = other.annotation;
         if(deepCopy)
-            nextNode = new Node(other.nextNode, true);
+            nextNode = new Node(other.nextNode, false);
         else
             nextNode = other.nextNode;
         computationalTime = other.computationalTime;

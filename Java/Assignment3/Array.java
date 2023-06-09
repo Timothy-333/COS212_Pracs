@@ -56,6 +56,31 @@ public class Array
         array[size] = o;
         size++;
     }
+    public void remove(Object o)
+    {
+        int index = indexOf(o);
+        if(index == -1)
+            return;
+        for(int i = index; i < size - 1; i++)
+            array[i] = array[i+1];
+        size--;
+        Object[] temp = new Object[size];
+        for(int i = 0; i < size; i++)
+            temp[i] = array[i];
+        array = temp;
+    }
+    public void removeLast()
+    {
+        if(size == 0)
+            return;
+        size--;
+        Object[] temp = new Object[size];
+        for(int i = 0; i < size; i++)
+        {
+            temp[i] = array[i];
+        }
+        array = temp;
+    }
     public Object[] toArray()
     {
         Object[] res = new Object[size];
@@ -75,8 +100,10 @@ public class Array
     public boolean contains(Object o)
     {
         for(int i = 0; i < size; i++)
-            if(array[i].equals(o))
+        {
+            if(array[i] == o)
                 return true;
+        }
         return false;
     }
     public Object getNode(String annotation)
@@ -89,7 +116,7 @@ public class Array
     public int indexOf(Object o)
     {
         for(int i = 0; i < size; i++)
-            if(array[i].equals(o))
+            if(array[i] == (o))
                 return i;
         return -1;
     }

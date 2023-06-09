@@ -96,6 +96,8 @@ public class CFG {
     {
         if(startNode == null || goalNode == null)
             return false;
+        if(nodes.indexOf(startNode) == -1 || nodes.indexOf(goalNode) == -1)
+            return false;
         isReachable = false;
         visited = new Boolean[nodes.toArray().length];
         for(int i = 0; i < nodes.toArray().length; i++)
@@ -106,12 +108,19 @@ public class CFG {
     private void DFS(Node startNode, Node goalNode)
     {
         if(startNode == goalNode)
+        {
             isReachable = true;
+            return;
+        }
         int v = nodes.indexOf(startNode);
+        if(v == -1)
+            return;
         visited[v] = true;
         for(int i = 0; i < startNode.getEdges().length; i++)
         {
             Node nextNode = startNode.getEdges()[i].getNext();
+            if(nodes.indexOf(nextNode) == -1)
+                continue;
             if(!visited[nodes.indexOf(nextNode)])
                 DFS(nextNode, goalNode);
         }
@@ -122,33 +131,116 @@ public class CFG {
             return -1;
         return p.computationalCostOfPath();
     }
-    int[] compTime;
-    Node[] prevNode;
-    Node[] unvisiteNodes;
     public Path shortestCompTimePath(Node sN, Node gN)
     {
-        if(sN == null || gN == null)
-            return null;
-        compTime = new int[nodes.toArray().length];
-        prevNode = new Node[nodes.toArray().length];
-        unvisiteNodes = new Node[nodes.toArray().length];
-        for(int i = 0; i < nodes.toArray().length; i++)
+        Path[] paths = getSimplePaths(nodes.indexOf(sN), nodes.indexOf(gN));
+        Path shortestPath = null;
+        for(int i = 0; i < paths.length; i++)
         {
-            compTime[i] = Integer.MAX_VALUE;
-            prevNode[i] = null;
+            if(shortestPath == null)
+                shortestPath = paths[i];
+            else if(compTimeRequired(paths[i]) < compTimeRequired(shortestPath))
+                shortestPath = paths[i];
         }
-        
-        compTime[nodes.indexOf(sN)] = 0;
-
-        return null;
+        return shortestPath;
     }
     public Path[] getPrimePaths()
     {
-        return null;
+        Path[] simplePaths = getSimplePaths();
+        Path[] primePaths = new Path[simplePaths.length];
+        for(int i = 0; i < simplePaths.length; i++)
+        {
+            primePaths[i] = simplePaths[i];
+            for(int j = 0; j < simplePaths.length; j++)
+            {
+                if(i != j && simplePaths[i].isSubPathOf(simplePaths[j]))
+                {
+                    primePaths[i] = null;
+                    break;
+                }
+            }
+        }
+        int count = 0;
+        for(int i = 0; i < primePaths.length; i++)
+            if(primePaths[i] != null)
+                count++;
+        Path[] res = new Path[count];
+        count = 0;
+        for(int i = 0; i < primePaths.length; i++)
+            if(primePaths[i] != null)
+                res[count++] = primePaths[i];
+        return res;
     }
+    Array allSimplePaths;
+    Array simplePaths;
+    Path currentPath;
     public Path[] getSimplePaths()
     {
-        return null;
+        allSimplePaths = new Array();
+        for (int i = 0; i < nodes.toArray().length; i++) 
+        {
+            for (int j = 0; j < nodes.toArray().length; j++)
+            {
+                Path[] paths = getSimplePaths(i,j);
+                for(int k = 0; k < paths.length; k++)
+                    allSimplePaths.add(paths[k]);
+            }
+        }
+        Path[] res = new Path[allSimplePaths.toArray().length];
+        for(int i = 0; i < allSimplePaths.toArray().length; i++)
+            res[i] = (Path)allSimplePaths.toArray()[i];
+        return sort(res);
+    }
+    private Path[] sort(Path[] paths)
+    {
+        for(int i = 0; i < paths.length; i++)
+        {
+            for(int j = 0; j < paths.length - i - 1; j++)
+            {
+                if(paths[j].toString().length() > paths[j+1].toString().length())
+                {
+                    Path temp = paths[j];
+                    paths[j] = paths[j+1];
+                    paths[j+1] = temp;
+                }
+            }
+        }
+        return paths;
+    }
+    int startNodeIndex;
+    public Path[] getSimplePaths(int startNode, int goalNode) 
+    {
+        startNodeIndex = startNode;
+        visited = new Boolean[nodes.toArray().length];
+        for (int i = 0; i < nodes.toArray().length; i++)
+            visited[i] = false;
+        simplePaths = new Array();
+        currentPath = new Path((Node) nodes.toArray()[startNode], (Node) nodes.toArray()[goalNode], null, null);
+        DFS(startNode, goalNode);
+        Path[] res = new Path[simplePaths.toArray().length];
+        for (int i = 0; i < simplePaths.toArray().length; i++)
+            res[i] = (Path) simplePaths.toArray()[i];
+        return res;
+    }
+    private void DFS(int startNode, int goalNode) 
+    {
+        visited[startNode] = true;
+        if (startNode == goalNode) {
+            simplePaths.add(new Path(currentPath, true));
+            visited[startNode] = false;
+            if(startNode != startNodeIndex)
+                return;
+        } 
+        for (int i = 0; i < ((Node) nodes.toArray()[startNode]).getEdges().length; i++) 
+        {
+            Node nextNode = ((Node) nodes.toArray()[startNode]).getEdges()[i].getNext();
+            if (visited[nodes.indexOf(nextNode)])
+                continue;
+            currentPath.appendToPath(nextNode, ((Node) nodes.toArray()[startNode]).getEdges()[i]);
+            DFS(nodes.indexOf(nextNode), goalNode);
+            currentPath.removeLastFromPath();
+        }
+        visited[startNode] = false;
     }
 
     public void addNode(String annotation)
